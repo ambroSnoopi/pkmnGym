@@ -131,7 +131,8 @@ class PokemonStorage
 
   def maxPokemon(box)
     return 0 if box >= self.maxBoxes
-    return (box < 0) ? Settings::MAX_PARTY_SIZE : self[box].length
+    #return (box < 0) ? Settings::MAX_PARTY_SIZE : self[box].length
+    return (box < 0) ? $gcGymLeader.pkmnCap : self[box].length
   end
 
   def full?
@@ -144,7 +145,8 @@ class PokemonStorage
   def pbFirstFreePos(box)
     if box == -1
       ret = self.party.length
-      return (ret >= Settings::MAX_PARTY_SIZE) ? -1 : ret
+      #return (ret >= Settings::MAX_PARTY_SIZE) ? -1 : ret
+      return (ret >= $gcGymLeader.pkmnCap) ? -1 : ret
     end
     maxPokemon(box).times do |i|
       return i if !self[box, i]

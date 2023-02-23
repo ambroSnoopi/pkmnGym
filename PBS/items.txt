@@ -6082,3 +6082,12 @@ Pocket = 8
 Price = 0
 Flags = KeyItem
 Description = A faded sea chart that shows the way to a certain island.
+#------------------------------- FAN MADE ITEMS -------------------------------
+[GYMLICENSE]
+Name = Gym License
+NamePlural = Gym Licenses
+Pocket = 8
+Price = 0
+FieldUse = Direct
+Flags = KeyItem
+Description = A license card for running a Gym. It records a type and rank.

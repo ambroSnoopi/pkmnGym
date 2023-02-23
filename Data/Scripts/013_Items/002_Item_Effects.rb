@@ -355,6 +355,15 @@ ItemHandlers::UseInField.add(:EXPALLOFF, proc { |item|
   next true
 })
 
+ItemHandlers::UseInField.add(:GYMLICENSE, proc { |item|
+  pbMessage(_INTL("Type: {1} \nRank: {2}", $gcGymLeader.currentType, $gcGymLeader.rank))
+  pbMessage(_INTL("Reputation: {1} \nNext Rank: {2}", $gcGymLeader.rep, $gcGymLeader.repNxtRank))
+  if $gcGymLeader.rep >= $gcGymLeader.repNxtRank
+    pbMessage(_INTL("Your Reputation is high enough to upgrade your License!"))
+    #if scene.pbConfirm(_INTL("Do you want to Upgrade it now?"))
+  end
+})
+
 #===============================================================================
 # UseOnPokemon handlers
 #===============================================================================

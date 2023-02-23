@@ -1,7 +1,6 @@
 #===============================================================================
 # Updating the Box with applicable Pkmn
 #===============================================================================
-
 def gcFillBox(type, lvl, legendariesAllowed = false)
     applicableSpecies = []
     GameData::Species.each_species { |s| applicableSpecies.push(s.id) if 
@@ -12,15 +11,14 @@ def gcFillBox(type, lvl, legendariesAllowed = false)
         (!s.egg_groups.include?(:Undiscovered) or legendariesAllowed)
     }
     for pkmn in applicableSpecies
-        echoln pkmn
+        #echoln pkmn
         #echoln GameData::Species.try_get(pkmn).category
         pbAddPokemonSilent(pkmn, lvl, true, false) #if pkmn.types.include?(type)
     end
     $PokemonStorage.currentBox=(0)
 end
 
-
-def gcUpdateBox(type,lvl)
+def gcUpdateBox(type, lvl, legendariesAllowed = false)
     $PokemonStorage.initialize()
-    gcFillBox(type,lvl)
+    gcFillBox(type, lvl, legendariesAllowed)
 end

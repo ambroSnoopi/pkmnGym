@@ -111,12 +111,12 @@ class Player < Trainer
     @battle_points         = 0
     @soot                  = 0
     @pokedex               = Pokedex.new
-    @has_pokedex           = false
+    @has_pokedex           = true
     @has_pokegear          = false
-    @has_running_shoes     = false
+    @has_running_shoes     = true
     @has_box_link          = false
-    @seen_storage_creator  = false
-    @has_exp_all           = false
+    @seen_storage_creator  = true
+    @has_exp_all           = true
     @mystery_gift_unlocked = false
     @mystery_gifts         = []
   end

@@ -4,7 +4,7 @@
 StartMoney = 3000
 StartItemStorage = POTION
 Home = 3,7,5,8
-StorageCreator = Bill
+StorageCreator = National GL
 WildBattleBGM = Battle wild
 TrainerBattleBGM = Battle trainer
 WildVictoryBGM = Battle victory wild

@@ -104,8 +104,8 @@ module Settings
   # Whether Rage Candy Bar acts as a Full Heal (true) or a Potion (false).
   RAGE_CANDY_BAR_CURES_STATUS_PROBLEMS = (MECHANICS_GENERATION >= 7)
   # Whether vitamins can add EVs no matter how many that stat already has in it
-  # (true), or whether they can't make that stat's EVs greater than 100 (false).
-  NO_VITAMIN_EV_CAP                    = (MECHANICS_GENERATION >= 8)
+  # (true), or whether they can't make that stat's EVs greater than 100 (false). #replaced 100 with $gcGymLeader.evCap
+  NO_VITAMIN_EV_CAP                    = false #(MECHANICS_GENERATION >= 8)
   # Whether Rare Candy can be used on a Pokémon that is already at its maximum
   # level if it is able to evolve by level-up (if so, triggers that evolution).
   RARE_CANDY_USABLE_AT_MAX_LEVEL       = (MECHANICS_GENERATION >= 8)

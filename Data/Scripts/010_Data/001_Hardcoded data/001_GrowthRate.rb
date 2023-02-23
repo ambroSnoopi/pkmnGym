@@ -21,7 +21,8 @@ module GameData
     # this method should return the maximum possible level ever.
     # @return [Integer] the maximum level attainable by a Pokémon
     def self.max_level
-      return Settings::MAXIMUM_LEVEL
+      #return Settings::MAXIMUM_LEVEL
+      return $gcGymLeader.nil? ? Settings::MAXIMUM_LEVEL : $gcGymLeader.levelCap
     end
 
     def initialize(hash)
