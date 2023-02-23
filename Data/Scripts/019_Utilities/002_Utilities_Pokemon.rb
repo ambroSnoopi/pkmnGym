@@ -74,14 +74,14 @@ def pbAddPokemon(pkmn, level = 1, see_form = true)
   return true
 end
 
-def pbAddPokemonSilent(pkmn, level = 1, see_form = true)
+def pbAddPokemonSilent(pkmn, level = 1, see_form = true, to_party = true)
   return false if !pkmn || pbBoxesFull?
   pkmn = Pokemon.new(pkmn, level) if !pkmn.is_a?(Pokemon)
   $player.pokedex.set_seen(pkmn.species)
   $player.pokedex.set_owned(pkmn.species)
   $player.pokedex.register(pkmn) if see_form
   pkmn.record_first_moves
-  if $player.party_full?
+  if $player.party_full? or !to_party
     $PokemonStorage.pbStoreCaught(pkmn)
   else
     $player.party[$player.party.length] = pkmn
