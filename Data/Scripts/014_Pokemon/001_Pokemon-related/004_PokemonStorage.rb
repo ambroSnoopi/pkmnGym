@@ -185,7 +185,7 @@ class PokemonStorage
       return false if !found
     end
     if boxDst == -1   # Copying into party
-      return false if party_full?
+      return false if party_full? #TODO: disallow moving into party if size would be above cap
       self.party[self.party.length] = self[boxSrc, indexSrc]
       self.party.compact!
     else   # Copying into box

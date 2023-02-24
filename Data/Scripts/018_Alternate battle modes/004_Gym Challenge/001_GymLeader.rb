@@ -36,6 +36,7 @@ class GymLeader
 
     def switchType(type)
         @currentType = type
+        $player.party = []
         gcUpdateBox(type, self.starterLevel, @rank >= LEGENDARIES_UNLOCK_RANK)
     end
 
@@ -47,6 +48,7 @@ class GymLeader
         return LVL_CAPS[@rank-1]
     end
 
+    #TODO: various scripts still use Settings::MAX_PARTY_SIZE which may cause bugs down the line
     def pkmnCap
         return PKMN_CAPS[@rank]
     end

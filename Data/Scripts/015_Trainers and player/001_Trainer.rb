@@ -78,7 +78,8 @@ class Trainer
   end
 
   def party_full?
-    return party_count >= Settings::MAX_PARTY_SIZE
+    max_party_size = $gcGymLeader.nil? ? Settings::MAX_PARTY_SIZE : $gcGymLeader.pkmnCap
+    return party_count >= max_party_size
   end
 
   # Returns true if there are no usable Pokémon in the player's party.

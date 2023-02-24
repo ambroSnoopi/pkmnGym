@@ -789,26 +789,28 @@ class PokemonStorageScene
   end
 
   def pbPartyChangeSelection(key, selection)
+    #TODO: maybe gray-out the non selectable party spaces (i.e. @sprites["boxparty"])
+    max_party_size = $gcGymLeader.nil? ? Settings::MAX_PARTY_SIZE : $gcGymLeader.pkmnCap-1
     case key
     when Input::LEFT
       selection -= 1
-      selection = Settings::MAX_PARTY_SIZE if selection < 0
+      selection = max_party_size if selection < 0
     when Input::RIGHT
       selection += 1
-      selection = 0 if selection > Settings::MAX_PARTY_SIZE
+      selection = 0 if selection > max_party_size
     when Input::UP
-      if selection == Settings::MAX_PARTY_SIZE
-        selection = Settings::MAX_PARTY_SIZE - 1
+      if selection == max_party_size
+        selection = max_party_size - 1
       else
         selection -= 2
-        selection = Settings::MAX_PARTY_SIZE if selection < 0
+        selection = max_party_size if selection < 0
       end
     when Input::DOWN
-      if selection == Settings::MAX_PARTY_SIZE
+      if selection == max_party_size
         selection = 0
       else
         selection += 2
-        selection = Settings::MAX_PARTY_SIZE if selection > Settings::MAX_PARTY_SIZE
+        selection = max_party_size if selection > max_party_size
       end
     end
     return selection
