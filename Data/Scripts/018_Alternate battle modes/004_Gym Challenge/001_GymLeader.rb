@@ -1,8 +1,10 @@
 #===============================================================================
 # GymLeader class for the player
 # Could also be considered a GymLicense class at this point...
+# This is a Singleton Class. The instance can be accessed globally using:
+#   $gcGymLeader
 #===============================================================================
-class GymLeader
+class GymLeader #< Player
     attr_reader     :currentType    #Type.id
     attr_accessor   :rep            #int Reputation value
     attr_accessor   :rank           #int 1 to 14
@@ -20,7 +22,7 @@ class GymLeader
         @rep = 100
         @rank = 1
         gcFillBox(type, self.starterLevel)
-        $gcGymLeader = self
+        $gcGymLeader = self #singleton
         #Settings::MAXIMUM_LEVEL = self.levelCap
         #Settings::MAX_PARTY_SIZE = self.pkmnCap
     end
@@ -32,6 +34,10 @@ class GymLeader
     def lose
         @rep -= 5
         @rep = 0 if @rep<0
+    end
+
+    def upgradeLicense
+        @rank += 1
     end
 
     def switchType(type)

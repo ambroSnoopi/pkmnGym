@@ -142,3 +142,14 @@ SaveData.register(:stats) do
   new_game_value { GameStats.new }
   reset_on_new_game
 end
+
+# Contains the save values defined in Essentials by default.
+
+SaveData.register(:gymLeader) do
+  ensure_class :GymLeader
+  save_value { $gcGymLeader }
+  load_value { |value| $gcGymLeader = value }
+  #new_game_value {
+    #GymLeader.new(:ROCK)
+  #}
+end
