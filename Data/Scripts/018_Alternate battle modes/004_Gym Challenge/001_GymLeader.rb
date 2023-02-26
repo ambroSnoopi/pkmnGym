@@ -21,13 +21,13 @@ class GymLeader #< Player
     def initialize(type)
         @currentType = type
         @rep = 100
-        @rank = 1
+        @rank = 0
         gcFillBox(type, self.starterLevel)
         #@LEGENDARIES_UNLOCK_RANK = LEGENDARIES_UNLOCK_RANK
         $gcGymLeader = self #singleton
         #Settings::MAXIMUM_LEVEL = self.levelCap
         #Settings::MAX_PARTY_SIZE = self.pkmnCap
-        self.writeGymCup
+        self.upgradeLicense
     end
 
     def win
@@ -42,6 +42,82 @@ class GymLeader #< Player
     def upgradeLicense
         @rank += 1
         writeGymCup
+
+        #provide rewards
+        case @rank
+        when 1
+            pbMessage(_INTL("/bI will also provide you with all the Berries of our region to get you startet."))
+            pbReceiveItem(:ORANBERRY)
+            $bag.add(:CHERIBERRY)
+            $bag.add(:CHESTOBERRY)
+            $bag.add(:PECHABERRY)
+            $bag.add(:RAWSTBERRY)
+            $bag.add(:ASPEARBERRY)
+            $bag.add(:LEPPABERRY)
+            $bag.add(:ORANBERRY)
+            $bag.add(:PERSIMBERRY)
+            $bag.add(:LUMBERRY)
+            $bag.add(:SITRUSBERRY)
+            $bag.add(:FIGYBERRY)
+            $bag.add(:WIKIBERRY)
+            $bag.add(:MAGOBERRY)
+            $bag.add(:AGUAVBERRY)
+            $bag.add(:IAPAPABERRY)
+            $bag.add(:RAZZBERRY)
+            $bag.add(:BLUKBERRY)
+            $bag.add(:NANABBERRY)
+            $bag.add(:WEPEARBERRY)
+            $bag.add(:PINAPBERRY)
+            $bag.add(:POMEGBERRY)
+            $bag.add(:KELPSYBERRY)
+            $bag.add(:QUALOTBERRY)
+            $bag.add(:HONDEWBERRY)
+            $bag.add(:GREPABERRY)
+            $bag.add(:TAMATOBERRY)
+            $bag.add(:CORNNBERRY)
+            $bag.add(:MAGOSTBERRY)
+            $bag.add(:RABUTABERRY)
+            $bag.add(:NOMELBERRY)
+            $bag.add(:SPELONBERRY)
+            $bag.add(:PAMTREBERRY)
+            $bag.add(:WATMELBERRY)
+            $bag.add(:DURINBERRY)
+            $bag.add(:BELUEBERRY)
+            $bag.add(:OCCABERRY)
+            $bag.add(:PASSHOBERRY)
+            $bag.add(:WACANBERRY)
+            $bag.add(:RINDOBERRY)
+            $bag.add(:YACHEBERRY)
+            $bag.add(:CHOPLEBERRY)
+            $bag.add(:KEBIABERRY)
+            $bag.add(:SHUCABERRY)
+            $bag.add(:COBABERRY)
+            $bag.add(:PAYAPABERRY)
+            $bag.add(:TANGABERRY)
+            $bag.add(:CHARTIBERRY)
+            $bag.add(:KASIBBERRY)
+            $bag.add(:HABANBERRY)
+            $bag.add(:COLBURBERRY)
+            $bag.add(:BABIRIBERRY)
+            $bag.add(:ROSELIBERRY)
+            $bag.add(:CHILANBERRY)
+            $bag.add(:LIECHIBERRY)
+            $bag.add(:GANLONBERRY)
+            $bag.add(:SALACBERRY)
+            $bag.add(:PETAYABERRY)
+            $bag.add(:APICOTBERRY)
+            $bag.add(:LANSATBERRY)
+            $bag.add(:STARFBERRY)
+            $bag.add(:ENIGMABERRY)
+            $bag.add(:MICLEBERRY)
+            $bag.add(:CUSTAPBERRY)
+            $bag.add(:JABOCABERRY)
+            $bag.add(:ROWAPBERRY)
+            $bag.add(:KEEBERRY)
+            $bag.add(:MARANGABERRY)
+            pbMessage(_INTL("/bU will gain access to more benefits as your rank increases."))
+        end
+
     end
 
     def switchType(type)
