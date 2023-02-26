@@ -213,7 +213,7 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
   echoln "Writting Data/trainer_lists.dat ..."
   save_data(trlists, "Data/trainer_lists.dat")
   yield(nil) if block_given?
-  echoln "Writting PBS Files " + trfile.to_s + "_trainers.txt and " trfile.to_s + "_pkmn.txt ..."
+  echoln "Writting PBS Files " + trfile.to_s + "_trainers.txt and " + trfile.to_s + "_pkmn.txt ..."
   Compiler.write_trainer_lists
   yield(nil) if block_given?
   echoln "Finished writting Trainers."

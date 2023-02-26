@@ -96,15 +96,81 @@ class BattleChallenge
 
   def pbBattle
     return @bc.extraData.pbBattle(self) if @bc.extraData   # Battle Factory
-    echoln "creating battle trainer..."
     opponent = pbGenerateBattleTrainer(self.nextTrainer, self.rules)
-    echoln "battle trainer created"
     bttrainers = pbGetBTTrainers(@id)
     trainerdata = bttrainers[self.nextTrainer]
     opponent.lose_text = pbGetMessageFromHash(MessageTypes::EndSpeechLose, trainerdata[4])
     opponent.win_text = pbGetMessageFromHash(MessageTypes::EndSpeechWin, trainerdata[3])
     ret = pbOrganizedBattleEx(opponent, self.rules)
     return ret
+  end
+
+  #===============================================================================
+  # variation of pbBattle and pbOrganizedBattleEx
+  #===============================================================================
+  def gcBattle
+    challengedata = self.rules
+
+    echoln "creating battle trainer..."
+    opponent = pbGenerateBattleTrainer(self.nextTrainer, self.rules)
+    bttrainers = pbGetBTTrainers(@id)
+    trainerdata = bttrainers[self.nextTrainer]
+    opponent.lose_text = pbGetMessageFromHash(MessageTypes::EndSpeechLose, trainerdata[4])
+    opponent.win_text = pbGetMessageFromHash(MessageTypes::EndSpeechWin, trainerdata[3])
+    echoln "battle trainer created"
+
+    # Skip battle if holding Ctrl in Debug mode
+    if Input.press?(Input::CTRL) && $DEBUG
+      pbMessage(_INTL("SKIPPING BATTLE..."))
+      pbMessage(_INTL("AFTER WINNING..."))
+      pbMessage(opponent.lose_text || "...")
+      $game_temp.last_battle_record = nil
+      pbMEStop
+      return true
+    end
+
+    # Remember original data, to be restored after battle
+    challengedata = PokemonChallengeRules.new if !challengedata
+    #oldlevels = challengedata.adjustLevels(opponent.party)
+    olditems  = $player.party.transform { |p| p.item_id }
+    olditems2 = opponent.party.transform { |p| p.item_id }
+    # Create the battle scene (the visual side of it)
+    scene = BattleCreationHelperMethods.create_battle_scene
+    # Create the battle class (the mechanics side of it)
+    battle = Battle.new(scene, $player.party, opponent.party, $player, opponent)
+    # Set various other properties in the battle class
+    BattleCreationHelperMethods.prepare_battle(battle)
+    # Perform the battle itself
+    decision = 0
+    pbBattleAnimation(pbGetTrainerBattleBGM(opponent)) {
+      pbSceneStandby {
+        decision = battle.pbStartBattle
+      }
+    }
+    Input.update
+    # Restore enemy parties to their original levels
+    #challengedata.unadjustLevels(opponent.party, oldlevels)
+    # Heal both parties and restore their original items
+    $player.party.each_with_index do |pkmn, i|
+      pkmn.heal
+      pkmn.makeUnmega
+      pkmn.makeUnprimal
+      pkmn.item = olditems[i]
+    end
+    opponent.party.each_with_index do |pkmn, i|
+      pkmn.heal
+      pkmn.makeUnmega
+      pkmn.makeUnprimal
+      pkmn.item = olditems2[i]
+    end
+    case decision
+    when 1   # Won
+      $stats.trainer_battles_won += 1
+    when 2, 3, 5   # Lost, fled, draw
+      $stats.trainer_battles_lost += 1
+    end
+    # Return true if the player won the battle, and false if any other result
+    return (decision == 1)
   end
 
   def pbInChallenge?

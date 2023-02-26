@@ -82,8 +82,9 @@ class GymLeader #< Player
     #===============================================================================
     def gcGymChallengeRules
         ret = PokemonChallengeRules.new
-        ret.setLevelAdjustment(TotalLevelAdjustment.new(self.starterLevel, self.levelCap, self.levelCap * self.pkmnCap))
+        ret.setLevelAdjustment(TotalLevelAdjustment.new(self.starterLevel, self.levelCap, ((self.starterLevel + self.levelCap) / 2) * self.pkmnCap))
         ret.addPokemonRule(MaximumLevelRestriction.new(self.levelCap))
+        #ret.addPokemonRule(MaximumLevelRestriction.new(1)) # for testing
         ret.addTeamRule(SpeciesClause.new)
         ret.addPokemonRule(BannedSpeciesRestriction.new(:UNOWN)) if @rank+1 >= LEGENDARIES_UNLOCK_RANK
         ret.addTeamRule(ItemClause.new)

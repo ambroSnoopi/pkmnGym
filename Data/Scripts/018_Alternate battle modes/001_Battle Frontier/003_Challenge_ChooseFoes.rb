@@ -43,6 +43,7 @@ def pbGenerateBattleTrainer(idxTrainer, rules)
   # Create the trainer
   trainerdata = bttrainers[idxTrainer]
   echoln "Creating NPC Trainer with id " + idxTrainer.to_s + " ..."
+ # echoln "...from " + bttrainers.to_s
   opponent = NPCTrainer.new(
     pbGetMessageFromHash(MessageTypes::TrainerNames, trainerdata[1]),
     trainerdata[0]
