@@ -8,6 +8,7 @@ class BattleChallenge
   BattlePalaceID  = 1
   BattleArenaID   = 2
   BattleFactoryID = 3
+  GymChallange    = 4
 
   def initialize
     @bc = BattleChallengeData.new
@@ -95,7 +96,9 @@ class BattleChallenge
 
   def pbBattle
     return @bc.extraData.pbBattle(self) if @bc.extraData   # Battle Factory
+    echoln "creating battle trainer..."
     opponent = pbGenerateBattleTrainer(self.nextTrainer, self.rules)
+    echoln "battle trainer created"
     bttrainers = pbGetBTTrainers(@id)
     trainerdata = bttrainers[self.nextTrainer]
     opponent.lose_text = pbGetMessageFromHash(MessageTypes::EndSpeechLose, trainerdata[4])

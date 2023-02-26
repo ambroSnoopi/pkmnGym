@@ -8,6 +8,7 @@ class GymLeader #< Player
     attr_reader     :currentType    #Type.id
     attr_accessor   :rep            #int Reputation value
     attr_accessor   :rank           #int 1 to 14
+    attr_reader     :LEGENDARIES_UNLOCK_RANK
     #TODO: decide wether rep & rank should be tied to a license/type
 
     #RANK       0   1   2   3   4   5   6   7   8   9   10  11  12  13  14
@@ -22,9 +23,11 @@ class GymLeader #< Player
         @rep = 100
         @rank = 1
         gcFillBox(type, self.starterLevel)
+        #@LEGENDARIES_UNLOCK_RANK = LEGENDARIES_UNLOCK_RANK
         $gcGymLeader = self #singleton
         #Settings::MAXIMUM_LEVEL = self.levelCap
         #Settings::MAX_PARTY_SIZE = self.pkmnCap
+        self.writeGymCup
     end
 
     def win
@@ -38,6 +41,7 @@ class GymLeader #< Player
 
     def upgradeLicense
         @rank += 1
+        writeGymCup
     end
 
     def switchType(type)
@@ -65,6 +69,34 @@ class GymLeader #< Player
 
     def repNxtRank
         return REP_PER_RANK * (@rank+1)
+    end
+
+    def badge
+        badge_s    = ["1st","2nd","3rd"] #Badge to be handed over to the Challanger...
+        return @rank<3 ? badge_s[@rank] : "{@rank+1}th"
+    end
+
+    #===============================================================================
+    # defines the rules which shall be applied to gym challangers
+    # TODO: vary rules depending on gym rank?
+    #===============================================================================
+    def gcGymChallengeRules
+        ret = PokemonChallengeRules.new
+        ret.setLevelAdjustment(TotalLevelAdjustment.new(self.starterLevel, self.levelCap, self.levelCap * self.pkmnCap))
+        ret.addPokemonRule(MaximumLevelRestriction.new(self.levelCap))
+        ret.addTeamRule(SpeciesClause.new)
+        ret.addPokemonRule(BannedSpeciesRestriction.new(:UNOWN)) if @rank+1 >= LEGENDARIES_UNLOCK_RANK
+        ret.addTeamRule(ItemClause.new)
+        ret.setNumber(self.pkmnCap)
+        return ret
+    end
+    
+    #===============================================================================
+    # create Trainers & Pokemon to match the current gym rank
+    # using "gcR"+@rank as id/tag, e.g. "gcR1"
+    #===============================================================================
+    def writeGymCup
+        pbWriteCup("gcR"+@rank.to_s, self.gcGymChallengeRules)
     end
 
 end

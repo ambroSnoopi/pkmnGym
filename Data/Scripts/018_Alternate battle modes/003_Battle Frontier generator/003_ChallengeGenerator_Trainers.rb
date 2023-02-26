@@ -18,6 +18,7 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
   # all that exist (with a base money < 100)
   if bttrainers.length == 0
     200.times do |i|
+      echoln "Generating Trainer " + i.to_s + " of 200..."
       yield(nil) if block_given? && i % 50 == 0
       trainerid = nil
       if GameData::TrainerType.exists?(:YOUNGSTER) && rand(30) == 0
@@ -40,6 +41,7 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
       bttrainers.push(tr)
     end
     # Sort all the randomly chosen trainers by their base money (smallest first)
+    echoln "Sorting Trainers..."
     bttrainers.sort! { |a, b|
       money1 = GameData::TrainerType.get(a[0]).base_money
       money2 = GameData::TrainerType.get(b[0]).base_money
@@ -49,6 +51,7 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
   yield(nil) if block_given?
   # Set all Pokémon in pokemonlist to the appropriate level, and determine their
   # type(s) and whether they are valid for the given rules
+  echoln "Fixing Pokemons..."
   suggestedLevel = rules.ruleset.suggestedLevel
   rulesetTeam = rules.ruleset.copy.clearPokemonRules
   pkmntypes = []
@@ -63,6 +66,7 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
   # to newbttrainers
   newbttrainers = []
   bttrainers.length.times do |btt|
+    echoln "Assigning Pokemon to Trainer " + btt.to_s + " of " + bttrainers.length.to_s + " ..."
     yield(nil) if block_given? && btt % 50 == 0
     trainerdata = bttrainers[btt]
     pokemonnumbers = trainerdata[5] || []
@@ -178,6 +182,8 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
   yield(nil) if block_given?
   # Add the trainer and Pokémon data from above to trainer_lists.dat, and then
   # create all PBS files from it
+  echoln "Finished generating Trainers."
+  echoln "Merging into existing trainer list..."
   pbpokemonlist = []
   pokemonlist.each do |pkmn|
     pbpokemonlist.push(PBPokemon.fromPokemon(pkmn))
@@ -204,8 +210,11 @@ def pbTrainerInfo(pokemonlist, trfile, rules)
     trlists.push(info)
   end
   yield(nil) if block_given?
+  echoln "Writting Data/trainer_lists.dat ..."
   save_data(trlists, "Data/trainer_lists.dat")
   yield(nil) if block_given?
+  echoln "Writting PBS Files " + trfile.to_s + "_trainers.txt and " trfile.to_s + "_pkmn.txt ..."
   Compiler.write_trainer_lists
   yield(nil) if block_given?
+  echoln "Finished writting Trainers."
 end
