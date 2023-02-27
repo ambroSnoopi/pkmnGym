@@ -6,6 +6,7 @@ def gcFillBox(type, lvl, legendariesAllowed = false)
     GameData::Species.each_species { |s| applicableSpecies.push(s.id) if 
         s.types.include?(type) && 
         s.minimum_level <= lvl &&
+        s.get_previous_species.minimum_level <= lvl && #exclude trade evos, if their previous stage was illegal to begin with
         (!s.family_item_evolutions_use_item? or s == s.get_baby_species) && #exclude evo stone evolutions
         #GameData::Evolution.get(s.get_previous_species).use_item_proc.nil?? && 
         (!s.egg_groups.include?(:Undiscovered) or legendariesAllowed)

@@ -28,3 +28,8 @@ Challenges = fancycupsingle,fancycupdouble
 Trainers = gcR1_trainers.txt
 Pokemon = gcR1_pkmn.txt
 Challenges = gcR1
+#-------------------------------
+[TrainerList]
+Trainers = gcR2_trainers.txt
+Pokemon = gcR2_pkmn.txt
+Challenges = gcR2
