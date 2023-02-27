@@ -112,7 +112,7 @@ class BattleChallenge
     challengedata = self.rules
 
     echoln "creating battle trainer..."
-    opponent = pbGenerateBattleTrainer(self.nextTrainer, self.rules)
+    opponent = gcGenerateBattleTrainer(self.nextTrainer, self.rules)
     bttrainers = pbGetBTTrainers(@id)
     trainerdata = bttrainers[self.nextTrainer]
     opponent.lose_text = pbGetMessageFromHash(MessageTypes::EndSpeechLose, trainerdata[4])
