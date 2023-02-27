@@ -1,4 +1,23 @@
-﻿# Pokémon Essentials
+﻿# Pokémon Gym Challange
+
+A fanmade Pokémon game using Pokémon Essentials for RPG Maker XP. 
+
+You will play a Gym Leader and defend your Badge against countless challenger. The challengers will be generated at random and will be powered by a competitive AI. Winning will increase your reputation and give you access to new state-governed Pokémon and benefits. Can you climb up the ladder to the very top of the Elite Four?
+
+## About this Repo
+
+This Git Repository is only for managing the modifications to the Scripts for RPG Maker XP.
+
+It will not contain all ressources needed to play the game.
+
+## How to Play the Game
+
+The game is currently in closed alpha and not publicly available.
+
+A compiled executable of the Game may be distributed once it has reached the beta phase.
+
+
+# Pokémon Essentials
 
 Based on Essentials v20.1.
 
