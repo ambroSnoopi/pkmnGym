@@ -33,12 +33,14 @@ class GymLeader #< Player
     end
 
     def win
-        @rep += 10
+        @rep < self.repNxtRank ? @rep += 20 : @rep += 1
+        pbMessage(_INTL("\bYour Reputation has increased to {1}.", @rep))
     end
 
     def lose
         @rep -= 5
         @rep = 0 if @rep<0
+        pbMessage(_INTL("\bYour Reputation has dropped to {1}.", @rep))
     end
 
     def upgradeLicense
@@ -57,6 +59,7 @@ class GymLeader #< Player
             pbReceiveItem(:LUMBERRY)
             pbMessage(_INTL("\bIn fact, let me deliver a comprehensive collection to your town."))
         when 2
+            pbMessage(_INTL("\bProf. Aid: Try teaching your Pokémon special moves, which they don't normally learn, to gain a strategic adventage."))
             pbReceiveItem(:TM100) #TODO: replace with signature move from gym type?
             pbReceiveItem(:HM01)
             pbReceiveItem(:HM02)
@@ -68,6 +71,33 @@ class GymLeader #< Player
             #TODO: reduce TM prices by 50% (buy=sell, i.e. basically for free - or can't TMs be sold anyway?)
         when 3
             pbMessage(_INTL("\bProf. Aid: Oak told me, he had a word with the move tutors that are free loading in his Condo here in Caledon. I wonder why he wanted me to tell you that..."))
+        when 4
+            pbMessage(_INTL("\bProf. Aid: There are powerfull items, which can drastically improve the usability of a Pokémon. You should start experimenting with it."))
+            pbReceiveItem(:CHOICEBAND)
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #TODO: add ShopKeeper for battle items
+        when 5
+            pbMessage(_INTL("\bProf. Aid: Did you know that certain Pokémon can only evolve by interacting with a specific item? Check this one out!"))
+            pbReceiveItem(:MOONSTONE)
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #TODO: add ShopKeeper
+        when 6
+            pbMessage(_INTL("\bProf. Aid: Did you know that it is possible to alter a Pokémon's Nature by using specific Item on them? This is most intriguing..."))
+            #TODO: add MINT items to the game...
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+        when 7
+            pbMessage(_INTL("\bProf. Aid: Did you know that it is also possible to alter a Pokémon's Ability by using specific Item on them? This is most intriguing..."))
+            #TODO: add CAPSULE items to the game...
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+        when 8
+            pbMessage(_INTL("\bProf. Aid: Every Pokémon is born with Individual Values, but by using specific items you can maximize it's stats!"))
+            #TODO: add BOTTLE CAPS items to the game...
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+        else 
+            pbMessage(_INTL("\bProf. Aid: Congratulation! You have become the strongest Gym Leader of this Nation. As such, you have been nominated to become part of the Elite Four! What an honor!"))
+            pbMessage(_INTL("Unfortunately, this is how far this demo goes. In a future version of the game, you will be able to become part of the Elite Four - and maybe even the Champ!"))
+            pbMessage(_INTL("If you have enjoyed the game so far, why don't you contribute your battle logs on GitHub.com? The repository by searching for: ambroSnoopi/pkmnGym"))
+            pbMessage(_INTL("Thank you!"))
         end
 
     end

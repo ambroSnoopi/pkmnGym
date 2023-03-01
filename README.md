@@ -4,11 +4,27 @@ A fanmade Pokémon game using Pokémon Essentials for RPG Maker XP.
 
 You will play a Gym Leader and defend your Badge against countless challenger. The challengers will be generated at random and will be powered by a competitive AI. Winning will increase your reputation and give you access to new state-governed Pokémon and benefits. Can you climb up the ladder to the very top of the Elite Four?
 
+## About this Project
+
+This is a hobby data science project for me to get familiar & apply Machine Learning and AI. Since I'm already putting so much effort in it, why not turn it into something others could enjoy?
+
 ## About this Repo
 
 This Git Repository is only for managing the modifications to the Scripts for RPG Maker XP.
 
 It will not contain all ressources needed to play the game.
+
+### Contribute with Log Data
+
+While I would certainly welcome anyone who's willing to help me with coding the game or with the ML bits and pieces, I'd be most grateful if you could contribute your Battle-Logs.
+
+During battles, Logs will be written at the games root directory to: ML/logs/
+
+These logs are used to train the AI. But since I don't have hours to play myself - and simulated battles don't really reflect human play styles - I am very much dependant on you players to help me gather the amount training data needed to develop a competitive AI.
+
+If you wan't to contribute, please upload/committ your logs to this repo: [ML/logs]/<yourAlias>/
+
+Thank you!
 
 ## How to Play the Game
 
@@ -16,45 +32,20 @@ The game is currently in closed alpha and not publicly available.
 
 A compiled executable of the Game may be distributed once it has reached the beta phase.
 
+### Report a Bug / Make a Feature Request
 
-# Pokémon Essentials
+You have found a tiny bug in this masterpiece? Or you have a genius suggestion how to make this AI project actually fun to play? [Raise an Issue] here on GitHub.
 
-Based on Essentials v20.1.
+# Credits
 
-You can build your fangame on top of a fork of this repository. Doing so will let you update your fangame with improvements made to this repo as soon as they are made.
+## Pokémon Essentials
 
-## Usage
+This game is based on [pokemon-essentials] v20.1 by [@Maruno17](https://github.com/Maruno17), a mod for RPG Maker XP.
 
-1. Fork this repo.
-2. Get a copy of Essentials v20.1 (a download link cannot be provided here).
-3. Clone your forked repo into the Essentials v20.1 folder, replacing the existing files with the ones from the repo.
+## RPG Maker XP
 
-From here, you can edit this project to turn it into your fangame/develop mods. When this repo is updated, you can pull the changes to update your fork and get the updates into your fangame/modding environment.
+[RPG Maker XP](https://www.rpgmakerweb.com/products/rpg-maker-xp) is a Game Engine and Maker Tool to create RPGs.
 
-## Scripts
-
-The scripts no longer live in the Scripts.rxdata file. They have been extracted into separate files and placed in the Data/Scripts/ folder (and subfolders within). This makes it easier to work with other people and keep track of changes.
-
-The scripts are loaded into the game alphanumerically, starting from the top folder (Data/Scripts/) and going depth-first. That is, all scripts in a given folder are loaded, and then each of its subfolder is checked in turn (again in alphanumerical order) for files/folders to load/check.
-
-### Extracting and reintegrating scripts
-
-This repo contains two script files in the main folder:
-
-* scripts_extract.rb - Run this to extract all scripts from Scripts.rxdata into individual .rb files (any existing individual .rb files are deleted).
-  * Scripts.rxdata is backed up to ScriptsBackup.rxdata, and is then replaced with a version that reads the individual .rb files and does nothing else.
-* scripts_combine.rb - Run this to reintegrate all the individual .rb files back into Scripts.rxdata.
-  * The individual .rb files are left where they are, but they no longer do anything.
-
-You will need Ruby installed to run these scripts. The intention is to replace these with something more user-friendly.
-
-## Files not in the repo
-
-The .gitignore file lists the files that will not be included in this repo. These are:
-
-* The Audio/, Graphics/ and Plugins/ folders and everything in them.
-* Everything in the Data/ folder, except for:
-  * The Data/Scripts/ folder and everything in there.
-  * Scripts.rxdata (a special version that just loads the individual script files).
-* A few files in the main project folder (two of the Game.xxx files, and the RGSS dll file).
-* Temporary files.
+[Raise an Issue]: https://github.com/ambroSnoopi/pkmnAI/issues
+[ML/logs]: https://github.com/ambroSnoopi/pkmnGym/tree/master/ML/logs
+[pokemon-essentials]: https://github.com/Maruno17/pokemon-essentials
