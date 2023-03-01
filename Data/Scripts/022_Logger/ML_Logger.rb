@@ -40,6 +40,14 @@ class ML_Logger
         @@turnID+=1
         @@situationID=0
     end
+
+    #called in pbEndOfBattle
+    def self.endBattle(decision)
+        if decision > 0
+            @@battlelogs[@@battleID].decision = decision
+            @@battlelogs[@@battleID].to_json(@@battleLogDir, "battle#{@@battleID}-end")
+        end
+    end
   
     #to be called before a player/AI command/choice has to be made to make a snapshot of the current situation
     #the result of the choice should be visable at the turn end log
@@ -51,6 +59,7 @@ class ML_Logger
     #   pbRegisterSwitch (never reached)
     #   pbEORSwitch (always executed)
     #   pbDefaultChooseNewEnemy (redundant with pbSwitchInBetween)
+    #   pbCommandPhase
     #situations: "preSwitch", ?
     def self.newState(battle, situation)
         turnLog = TurnLog.new(@@battleID, @@turnID, battle)

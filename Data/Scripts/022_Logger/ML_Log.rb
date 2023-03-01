@@ -63,11 +63,20 @@ class BattleLog < ML_Log
     attr_reader   :id
     attr_reader   :player           # Player trainer (or array of trainers)
     attr_reader   :opponent         # Opponent trainer (or array of trainers)  
+    attr_accessor :decision
+    # Results of battle:
+    #    0 - Undecided or aborted
+    #    1 - Player won
+    #    2 - Player lost
+    #    3 - Player or wild Pokémon ran from battle, or player forfeited the match
+    #    4 - Wild Pokémon was caught
+    #    5 - Draw
 
     def initialize(id, battle, dir = @dir, fname = @fname)
         @id         = id
         @player     = TrainerLog.new(battle.player[0])
         @opponent   = TrainerLog.new(battle.opponent[0]) #no double-battles support
+        @decision    = 0
 
         @gameVersion = Settings::GAME_VERSION
         @dir   = dir
@@ -75,7 +84,8 @@ class BattleLog < ML_Log
         @hmap = {
             :id        => @id, 
             :player    => @player, 
-            :opponent  => @opponent
+            :opponent  => @opponent,
+            :decision  => @decision
         }
     end
 end
@@ -328,23 +338,3 @@ class MoveLog < ML_Log
     end
 
 end
-
-=begin
-    
-# Results of battle:
-#    0 - Undecided or aborted
-#    1 - Player won
-#    2 - Player lost
-#    3 - Player or wild Pokémon ran from battle, or player forfeited the match
-#    4 - Wild Pokémon was caught
-#    5 - Draw
-# Possible actions a battler can take in a round:
-#    :None
-#    :UseMove
-#    :SwitchOut
-#    :UseItem
-#    :Call
-#    :Run
-#    :Shift
-    
-=end

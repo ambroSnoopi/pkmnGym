@@ -401,6 +401,7 @@ class Battle
   end
 
   def pbEndOfBattle
+    ML_Logger.endBattle(@decision)
     oldDecision = @decision
     @decision = 4 if @decision == 1 && wildBattle? && @caughtPokemon.length > 0
     case oldDecision
