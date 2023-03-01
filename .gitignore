@@ -8,6 +8,10 @@ Data/*
 !Data/Scripts.rxdata
 !Data/Scripts/
 
+# Machine Learning Logs folder, but not the example folder
+ML/logs/*
+!ML/logs/battle0/
+
 # Files in the main project folder
 Game.ini
 Game.rxproj
