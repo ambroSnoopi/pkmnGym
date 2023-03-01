@@ -707,6 +707,10 @@ class Battle
     pbEORShiftDistantBattlers
     # Try to make Trace work, check for end of primordial weather
     priority.each { |battler| battler.pbContinualAbilityChecks }
+
+    ML_Logger.endTurn(self) #TODO test whether it should be called before resetting Effects
+    echoln "Logging turn at pbEndOfRoundPhase"
+    
     # Reset/count down battler-specific effects (no messages)
     allBattlers.each do |battler|
       battler.effects[PBEffects::BanefulBunker]    = false
@@ -774,7 +778,5 @@ class Battle
     @field.effects[PBEffects::FusionBolt]  = false
     @field.effects[PBEffects::FusionFlare] = false
     @endOfRound = false
-    ML_Logger.endTurn(self) #TODO test whether it should be called before resetting Effects
-    echoln "Logging turn at pbEndOfRoundPhase"
   end
 end
