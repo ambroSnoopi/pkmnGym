@@ -212,7 +212,7 @@ class BattlerLog < ML_Log
         @ability_id = battler.ability_id
         @item_id = battler.item_id
         @moves = []
-        #battler.moves.each { |m| @moves.push(MoveLog.new(m).as_json)}
+        #battler.moves.each { |m| @moves.push(MoveLog.new(m).as_json)} #TODO fix 3rd lvl nested json
         battler.moves.each { |m| @moves.push(m.id.to_s)}
         @plainStats = battler.plainStats.transform_keys(&:to_s) 
         @totalhp = battler.totalhp
@@ -229,7 +229,7 @@ class BattlerLog < ML_Log
         @lastRegularMoveUsed   = battler.lastRegularMoveUsed  
 
         @movesUsed = []
-        #@movesUsed.push(battler.movesUsed.each { |m| m.to_s})#TODO bugfix         
+        battler.movesUsed.each { |m| @movesUsed.push(m.to_s)}   
 
         #@tookPhysicalHit       = battler.tookPhysicalHit      
         @statsRaisedThisRound  = battler.statsRaisedThisRound 
