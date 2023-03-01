@@ -10,7 +10,7 @@ class ML_Logger
     @@battleLogDir = ML_LOG_DIR+"0"
     @@battleID = 0
     @@turnID = 0
-    @@battlelogs = []
+    @@battlelogs = [] #currently not used (only required if ammended later on)
   
     #resets internal variables and creates directory
     #checks if the dir alrdy exist, if so calls itself recursivly to inc battleID (required after loading the game)
@@ -38,7 +38,7 @@ end
 
 #Abstract Data Class for MLLoger
 class MLLog 
-    attr_accessor :hmap             # Hashmap to collect each variable that needs to be logged
+    attr_reader :hmap               # Hashmap to collect each variable that needs to be logged
     attr_accessor :dir              # Directory Path to where the Log shall be saved
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
@@ -49,7 +49,7 @@ class MLLog
         h.transform_values!{|v| 
             case
             when v.respond_to?(:as_json)
-                v.as_json #TODO: keep it as an hash map without encapsulating it in double quotes
+                v.as_json #TODO: keep it as an hash map without encapsulating it in double quotes (handled below as a workaround)
             when v.is_a?(Integer)
                 v
             else
@@ -58,6 +58,12 @@ class MLLog
         }
         str = h.to_s
         str.gsub!("=>", ": ")
+        #handle nested json & prettify: #TOTEST does it work with multiple levels of nesting?
+        str.gsub!("\"{", "{\n   ")
+        str.gsub!("}\"", "}\n")
+        str.gsub!("\\\"", "\"")
+        str.gsub!(",", ",\n")
+        str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
         return str
     end
 
@@ -117,26 +123,16 @@ class TrainerLog < MLLog
             :name           => @name
         }
     end
-
 end
 
-#TODO
+#Data Class to store all relevant information of a turn
 class TurnLog < MLLog
-    attr_reader :testt
 
-    def initialize(testt)
-        @testt = testt
+    def initialize(battle)
 
         @dir   = dir
         @fname = fname
-        @varsToLog = ["testt"]
-    end
-
-    def to_json(dir = @dir, fname = @fname)#for testing
-        @dir = dir
-        @fname = fname
-        File.open("#{dir}/#{fname}.json", "a+b") {|f| f.write(Hash.try_convert(self)) }
-        File.open("#{dir}/#{fname}.json", "a+b") {|f| f.write(Hash.try_convert(self).to_s) }
- #       File.open("#{dir}/#{fname}.json", "a+b") {|f| f.write(self.hash.to_s) }
+        @hmap = {
+        }
     end
 end
