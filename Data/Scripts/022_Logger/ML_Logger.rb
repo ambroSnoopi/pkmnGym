@@ -30,8 +30,15 @@ class ML_Logger
         File.directory?(@@battleLogDir) ? incrBattleID : Dir.mkdir(@@battleLogDir)
     end
 
-    #TODO
+    #called in: pbEndOfRoundPhase
+    #other canditates would be:
+    #   pbDefaultChooseEnemyCommand
+    #   pbDefaultChooseNewEnemy
+    #   pbEndOfBattle / pbJudge
     def self.newTurn(battle)
+        turnLog = TurnLog.new(battle)
+        turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}")
+        @@turnID+=1
     end
   
 end
@@ -76,6 +83,7 @@ class MLLog
     def to_json(dir = @dir, fname = @fname)
         @dir = dir
         @fname = fname
+        Dir.mkdir(dir) if !File.directory?(dir)
         File.open("#{dir}/#{fname}.json", "w") {|f| f.write(self.as_json) }
     end
 end
@@ -127,12 +135,48 @@ end
 
 #Data Class to store all relevant information of a turn
 class TurnLog < MLLog
+    #from Battle class
+    attr_reader   :turnCount
+    attr_reader   :field            # Effects common to the whole of a battle
+    attr_reader   :sides            # Effects common to each side of a battle
+    attr_reader   :positions        # Effects that apply to a battler position
+    attr_reader   :battlers         # Currently active Pokémon
+    attr_accessor :items            # Items held by opponents
+    attr_accessor :ally_items       # Items held by allies
+    attr_accessor :choices          # Choices made by each Pokémon this round
+    attr_reader   :usedInBattle     # Whether each Pokémon was used in battle (for Burmy)
+    attr_accessor :lastMoveUsed     # Last move used
+    attr_accessor :lastMoveUser     # Last move user
+    #TBC
 
     def initialize(battle)
+        @turnCount = battle.turnCount
+        #TODO add and test more variables
 
         @dir   = dir
         @fname = fname
         @hmap = {
+            :turnCount  => @turnCount
         }
     end
 end
+
+=begin
+    
+# Results of battle:
+#    0 - Undecided or aborted
+#    1 - Player won
+#    2 - Player lost
+#    3 - Player or wild Pokémon ran from battle, or player forfeited the match
+#    4 - Wild Pokémon was caught
+#    5 - Draw
+# Possible actions a battler can take in a round:
+#    :None
+#    :UseMove
+#    :SwitchOut
+#    :UseItem
+#    :Call
+#    :Run
+#    :Shift
+    
+=end

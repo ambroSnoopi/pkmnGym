@@ -595,6 +595,8 @@ class Battle
   def pbEndOfRoundPhase
     PBDebug.log("")
     PBDebug.log("[End of round]")
+    ML_Logger.newTurn(self)
+    echoln "Logging turn at pbEndOfRoundPhase"
     @endOfRound = true
     @scene.pbBeginEndOfRoundPhase
     pbCalculatePriority           # recalculate speeds
