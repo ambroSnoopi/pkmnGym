@@ -8,19 +8,36 @@ class ML_Log
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
     #return a JSON String representation of the hmap
-    def as_json(hmap = @hmap)
+    def prep_json(hmap = @hmap)
         h = hmap.merge #copy
         h.transform_keys!(&:to_s) 
         h.transform_values!{|v| 
             case
-            when v.respond_to?(:as_json) #TODO: support nesting of multiple levels
-                v.as_json #TODO: keep it as an hash map without encapsulating it in double quotes (handled below as a workaround)
+            when v.respond_to?(:as_json) #TODO: support nesting of multiple levels // keep it as an hash map without encapsulating it in double quotes (handled below as a workaround)?
+                v.prep_json
+            when v.is_a?(Array) #there must be a better way to do this
+                v.each_with_index { |x, i| 
+                    case 
+                    when x.respond_to?(:as_json) 
+                        v[i] = x.prep_json
+                    #when x.is_a?(Integer)
+                    #    x
+                    #else x.to_s
+                    end 
+                }
             when v.is_a?(Integer)
                 v
             else
                 v.to_s 
             end
         }
+        return h
+    end
+    
+    def as_json(hmap = @hmap)
+        h = prep_json(hmap)
+        echoln "Hashmap of MLLog before prettyfication:"
+        echoln h
         str = h.to_s
         str.gsub!("=>", ": ")
         #handle nested json & prettify: #TOTEST does it work with multiple levels of nesting?
@@ -212,8 +229,9 @@ class BattlerLog < ML_Log
         @ability_id = battler.ability_id
         @item_id = battler.item_id
         @moves = []
-        #battler.moves.each { |m| @moves.push(MoveLog.new(m).as_json)} #TODO fix 3rd lvl nested json
-        battler.moves.each { |m| @moves.push(m.id.to_s)}
+        battler.moves.each { |m| @moves.push(MoveLog.new(m))} #TODO fix 3rd lvl nested json
+        #battler.moves.each { |m| @moves.push(m.id.to_s)} #workaround
+        echoln @moves
         @plainStats = battler.plainStats.transform_keys(&:to_s) 
         @totalhp = battler.totalhp
         @hp = battler.hp
@@ -280,7 +298,7 @@ end
 #Simplified Data Class for Battle::Move
 class MoveLog < ML_Log 
     #attr_reader   :battle
-    attr_reader   :realMove
+    #attr_reader   :realMove    #<Pokemon::Move>
     attr_accessor :id
     attr_reader   :name
     attr_reader   :function
@@ -294,13 +312,13 @@ class MoveLog < ML_Log
     attr_reader   :target
     attr_reader   :priority
     attr_reader   :flags
-    attr_accessor :calcType
-    attr_accessor :powerBoost
+    #attr_accessor :calcType
+    #attr_accessor :powerBoost
     #attr_accessor :snatched
 
     def initialize(battleMove)
         @hmap = {
-            :realMove   => battleMove.realMove  ,
+            #:realMove   => battleMove.realMove  ,
             :id         => battleMove.id        ,
             :name       => battleMove.name      ,
             :function   => battleMove.function  ,
@@ -313,9 +331,7 @@ class MoveLog < ML_Log
             :addlEffect => battleMove.addlEffect,
             :target     => battleMove.target    ,
             :priority   => battleMove.priority  ,
-            :flags      => battleMove.flags     ,
-            :calcType   => battleMove.calcType  ,
-            :powerBoost => battleMove.powerBoost
+            :flags      => battleMove.flags
         }
     end
 
