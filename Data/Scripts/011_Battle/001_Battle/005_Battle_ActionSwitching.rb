@@ -100,6 +100,7 @@ class Battle
     @choices[idxBattler][0] = :SwitchOut
     @choices[idxBattler][1] = idxParty   # Party index of Pokémon to switch in
     @choices[idxBattler][2] = nil
+  #  ML_Logger.newState(self, "preSwitch") #appearently this is never called
     return true
   end
 
@@ -129,6 +130,8 @@ class Battle
   # For choosing a replacement Pokémon when prompted in the middle of other
   # things happening (U-turn, Baton Pass, in def pbEORSwitch).
   def pbSwitchInBetween(idxBattler, checkLaxOnly = false, canCancel = false)
+    echoln "Logging preSwitch in pbSwitchInBetween"
+    ML_Logger.newState(self, "preSwitch")
     return pbPartyScreen(idxBattler, checkLaxOnly, canCancel) if pbOwnedByPlayer?(idxBattler)
     return @battleAI.pbDefaultChooseNewEnemy(idxBattler, pbParty(idxBattler))
   end
@@ -307,6 +310,7 @@ class Battle
     pbCalculatePriority
     # Check forms are correct
     allBattlers.each { |b| b.pbCheckForm }
+    ML_Logger.endTurn(self)
   end
 
   # Called when one or more Pokémon switch in. Does a lot of things, including

@@ -595,8 +595,6 @@ class Battle
   def pbEndOfRoundPhase
     PBDebug.log("")
     PBDebug.log("[End of round]")
-    ML_Logger.newTurn(self)
-    echoln "Logging turn at pbEndOfRoundPhase"
     @endOfRound = true
     @scene.pbBeginEndOfRoundPhase
     pbCalculatePriority           # recalculate speeds
@@ -776,5 +774,7 @@ class Battle
     @field.effects[PBEffects::FusionBolt]  = false
     @field.effects[PBEffects::FusionFlare] = false
     @endOfRound = false
+    ML_Logger.endTurn(self) #TODO test whether it should be called before resetting Effects
+    echoln "Logging turn at pbEndOfRoundPhase"
   end
 end

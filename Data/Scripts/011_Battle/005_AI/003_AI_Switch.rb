@@ -147,6 +147,8 @@ class Battle::AI
   # Choose a replacement Pokémon
   #=============================================================================
   def pbDefaultChooseNewEnemy(idxBattler, party)
+    #echoln "Logging preSwitch in pbDefaultChooseNewEnemy"
+    #ML_Logger.newState(@battle, "preSwitch") #redundant?
     enemies = []
     idxPartyStart, idxPartyEnd = @battle.pbTeamIndexRangeFromBattlerIndex(idxBattler)
     party.each_with_index do |_p, i|

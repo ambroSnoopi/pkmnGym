@@ -10,6 +10,7 @@ class ML_Logger
     @@battleLogDir = ML_LOG_DIR+"0"
     @@battleID = 0
     @@turnID = 0
+    @@situationID = 0
     @@battlelogs = [] #currently not used (only required if ammended later on)
   
     #resets internal variables and creates directory
@@ -18,6 +19,7 @@ class ML_Logger
     #called in gcBattle before starting the battle
     def self.newBattle(battle)
         @@turnID=0
+        @@situationID=0
         self.incrBattleID
         battleLog = BattleLog.new(@@battleID, battle)
         battleLog.to_json(@@battleLogDir, "battle#{@@battleID}")
@@ -30,17 +32,32 @@ class ML_Logger
         File.directory?(@@battleLogDir) ? incrBattleID : Dir.mkdir(@@battleLogDir)
     end
 
-    #called in: pbEndOfRoundPhase
-    #other canditates would be:
-    #   pbDefaultChooseEnemyCommand
-    #   pbDefaultChooseNewEnemy
-    #   pbEndOfBattle / pbJudge
-    def self.newTurn(battle)
-        turnLog = TurnLog.new(battle)
-        turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}")
+    #called in: pbOnAllBattlersEnteringBattle, pbEndOfRoundPhase
+    def self.endTurn(battle)
+        turnLog = TurnLog.new(@@battleID, @@turnID, battle)
+        #turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}") #currently there is no need to store turn logs in a seperate folder
+        turnLog.to_json(@@battleLogDir, "turn#{@@turnID}-end")
         @@turnID+=1
+        @@situationID=0
     end
   
+    #to be called before a player/AI command/choice has to be made to make a snapshot of the current situation
+    #the result of the choice should be visable at the turn end log
+    #the state before "ChooseCommand" should be visible from the endTurn log
+    #called in: 
+    #   pbSwitchInBetween
+    #other canditates would be:
+    #   pbDefaultChooseEnemyCommand
+    #   pbRegisterSwitch (never reached)
+    #   pbEORSwitch (always executed)
+    #   pbDefaultChooseNewEnemy (redundant with pbSwitchInBetween)
+    #situations: "preSwitch", ?
+    def self.newState(battle, situation)
+        turnLog = TurnLog.new(@@battleID, @@turnID, battle)
+        #turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}") #currently there is no need to store turn logs in a seperate folder
+        turnLog.to_json(@@battleLogDir, "turn#{@@turnID}-s#{@@situationID}-#{situation}")
+        @@situationID+=1
+    end
 end
 
 #Abstract Data Class for MLLoger
@@ -88,8 +105,8 @@ class MLLog
     end
 end
 
-#Data Class of Battle
-#Given a Battle Class it will extract & store all relevant information
+#Data Class of Battle for general static Metadate
+#Given a Battle Class it will extract & store all relevant information, similar to TurnLog
 class BattleLog < MLLog
     attr_reader   :id
     attr_reader   :player           # Player trainer (or array of trainers)
@@ -133,8 +150,11 @@ class TrainerLog < MLLog
     end
 end
 
-#Data Class to store all relevant information of a turn
+#Data Class of Battle for dynamic Round related data
+#Given a Battle Class it will extract & store all relevant information, similar to BattleLog
 class TurnLog < MLLog
+    attr_reader   :battleID
+    attr_reader   :turnID
     #from Battle class
     attr_reader   :turnCount
     attr_reader   :field            # Effects common to the whole of a battle
@@ -149,17 +169,44 @@ class TurnLog < MLLog
     attr_accessor :lastMoveUser     # Last move user
     #TBC
 
-    def initialize(battle)
+    def initialize(battleID, turnID, battle, dir = @dir, fname = @fname)
+
+        @battleID = battleID
+        @turnID = turnID
+
         @turnCount = battle.turnCount
-        #TODO add and test more variables
+        @field = battle.field
+        @sides = battle.sides
+        @positions = battle.positions
+        @battlers = battle.battlers
+        @items = battle.items
+        @ally_items = battle.ally_items
+        @choices = battle.choices
+        @usedInBattle = battle.usedInBattle
+        @lastMoveUsed = battle.lastMoveUsed
+        @lastMoveUser = battle.lastMoveUser
+        #TODO LogClass views for all required objects
 
         @dir   = dir
         @fname = fname
         @hmap = {
-            :turnCount  => @turnCount
+            :battleID   => @battleID,
+            :turnID     => @turnID,
+            :field     => @field,
+            :sides     => @sides,
+            :turnCount  => @turnCount,
+            :positions      => @positions,
+            :battlers      => @battlers,
+            :items      => @items,
+            :ally_items      => @ally_items,
+            :choices      => @choices,
+            :usedInBattle      => @usedInBattle,
+            :lastMoveUsed      => @lastMoveUsed,
+            :lastMoveUser      => @lastMoveUser
         }
     end
 end
+
 
 =begin
     
