@@ -13,18 +13,10 @@ class ML_Log
         h.transform_keys!(&:to_s) 
         h.transform_values!{|v| 
             case
-            when v.respond_to?(:as_json) #TODO: support nesting of multiple levels // keep it as an hash map without encapsulating it in double quotes (handled below as a workaround)?
+            when v.respond_to?(:as_json)
                 v.prep_json
-            when v.is_a?(Array) #there must be a better way to do this
-                v.each_with_index { |x, i| 
-                    case 
-                    when x.respond_to?(:as_json) 
-                        v[i] = x.prep_json
-                    #when x.is_a?(Integer)
-                    #    x
-                    #else x.to_s
-                    end 
-                }
+            when v.is_a?(Array)
+                v.each_with_index { |x, i| v[i] = x.prep_json if x.respond_to?(:as_json) }
             when v.is_a?(Integer)
                 v
             else
@@ -36,11 +28,11 @@ class ML_Log
     
     def as_json(hmap = @hmap)
         h = prep_json(hmap)
-        echoln "Hashmap of MLLog before prettyfication:"
-        echoln h
+        #echoln "Hashmap of MLLog before prettyfication:"
+        #echoln h
         str = h.to_s
         str.gsub!("=>", ": ")
-        #handle nested json & prettify: #TOTEST does it work with multiple levels of nesting?
+        #handle nested json & prettify:
         str.gsub!("\"{", "{\n   ")
         str.gsub!("}\"", "}\n")
         str.gsub!("\"[", "[\n   ")
@@ -229,9 +221,8 @@ class BattlerLog < ML_Log
         @ability_id = battler.ability_id
         @item_id = battler.item_id
         @moves = []
-        battler.moves.each { |m| @moves.push(MoveLog.new(m))} #TODO fix 3rd lvl nested json
+        battler.moves.each { |m| @moves.push(MoveLog.new(m))}
         #battler.moves.each { |m| @moves.push(m.id.to_s)} #workaround
-        echoln @moves
         @plainStats = battler.plainStats.transform_keys(&:to_s) 
         @totalhp = battler.totalhp
         @hp = battler.hp
@@ -247,7 +238,8 @@ class BattlerLog < ML_Log
         @lastRegularMoveUsed   = battler.lastRegularMoveUsed  
 
         @movesUsed = []
-        battler.movesUsed.each { |m| @movesUsed.push(m.to_s)}   
+        battler.movesUsed.each { |m| @movesUsed.push(m.to_s)}
+        #battler.movesUsed.each { |m| @movesUsed.push(MoveLog.new(m))}  #unfortunately, "m" here is just a Symbol
 
         #@tookPhysicalHit       = battler.tookPhysicalHit      
         @statsRaisedThisRound  = battler.statsRaisedThisRound 
