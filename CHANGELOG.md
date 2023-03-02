@@ -14,11 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Fixed
+- upgradeLicense now displays all inherent benefits and updates the box as intended
 
 ## [0.1.0] - 2023-03-02 - ALPHA
 
 ### Added
-
 - First relase
 
 

@@ -46,11 +46,14 @@ class GymLeader #< Player
     def upgradeLicense
         @rank += 1
         pbSet(103, @rank) #GameVariable "Rank"
+        gcUpdateBox(@type, self.starterLevel, @rank >= LEGENDARIES_UNLOCK_RANK)
         writeGymCup
 
         #provide rewards
         #TODO remaining rewards
-        pbMessage(_INTL("Your Pokémon can now gain up to {1} EV.", EV_CAPS[@rank])) if @rank < 12
+        pbMessage(_INTL("You can now have up to {1} Pokémon in your team.", PKMN_CAPS[@rank])) if PKMN_CAPS[@rank] > PKMN_CAPS[@rank-1]
+        pbMessage(_INTL("Your Pokémon can now reach Level {1}.", LVL_CAPS[@rank])) if LVL_CAPS[@rank] > LVL_CAPS[@rank-1]
+        pbMessage(_INTL("Your Pokémon can now gain up to {1} EV.", EV_CAPS[@rank])) if EV_CAPS[@rank] > EV_CAPS[@rank-1]
         case @rank
         when 1
             pbMessage(_INTL("To get you started, I will also provide your with an asortment of Berries from our region."))
