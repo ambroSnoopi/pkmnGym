@@ -29,7 +29,7 @@ class GymLeader #< Player
         $gcGymLeader = self #singleton
         #Settings::MAXIMUM_LEVEL = self.levelCap
         #Settings::MAX_PARTY_SIZE = self.pkmnCap
-        self.upgradeLicense
+        #self.upgradeLicense #is done by the intro event
     end
 
     def win
