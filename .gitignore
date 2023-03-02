@@ -21,6 +21,9 @@ RGSS*.dll
 #animmaker.*
 #extendtext.*
 
+#Builds
+Builds/
+
 # Common code editor folders & files
 .vscode/
 *.code-workspace
