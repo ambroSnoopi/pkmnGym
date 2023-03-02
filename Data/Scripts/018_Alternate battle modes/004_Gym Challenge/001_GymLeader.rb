@@ -74,25 +74,25 @@ class GymLeader #< Player
         when 4
             pbMessage(_INTL("Prof. Aid: There are powerfull items, which can drastically improve the usability of a Pokémon. You should start experimenting with it."))
             pbReceiveItem(:CHOICEBAND)
-            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
             #TODO: add ShopKeeper for battle items
         when 5
             pbMessage(_INTL("Prof. Aid: Did you know that certain Pokémon can only evolve by interacting with a specific item? Check this one out!"))
             pbReceiveItem(:MOONSTONE)
-            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
             #TODO: add ShopKeeper
         when 6
             pbMessage(_INTL("Prof. Aid: Did you know that it is possible to alter a Pokémon's Nature by using specific Item on them? This is most intriguing..."))
             #TODO: add MINT items to the game...
-            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
         when 7
             pbMessage(_INTL("Prof. Aid: Did you know that it is also possible to alter a Pokémon's Ability by using specific Item on them? This is most intriguing..."))
             #TODO: add CAPSULE items to the game...
-            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
         when 8
             pbMessage(_INTL("Prof. Aid: Every Pokémon is born with Individual Values, but by using specific items you can maximize it's stats!"))
             #TODO: add BOTTLE CAPS items to the game...
-            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
+            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
         else 
             pbMessage(_INTL("Prof. Aid: Congratulation! You have become the strongest Gym Leader of this Nation. As such, you have been nominated to become part of the Elite Four! What an honor!"))
             pbMessage(_INTL("Unfortunately, this is how far this demo goes. In a future version of the game, you will be able to become part of the Elite Four - and maybe even the Champ!"))
