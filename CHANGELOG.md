@@ -20,7 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2023-03-02 - ALPHA
 
 ### Added
-- First relase
+- Play as a Gym Leader with a Rank system
+- Rules, Restrictions and Rewards based on your Rank
+- Generate & fill box with adequate Pkmn
+- Generate Challangers with adequate Pkmn
+- Log Battles as JSON for future processing with Machine Learning
 
 
 [unreleased]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.0...HEAD
