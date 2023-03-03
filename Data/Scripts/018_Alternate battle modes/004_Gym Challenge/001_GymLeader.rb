@@ -44,8 +44,10 @@ class GymLeader #< Player
     end
 
     def upgradeLicense
+        $Trainer.badges[@rank]=true #index0=1stBadge
         @rank += 1
         pbSet(103, @rank) #GameVariable "Rank"
+
         gcUpdateBox(@type, self.starterLevel, @rank >= LEGENDARIES_UNLOCK_RANK)
         writeGymCup
 
