@@ -8,14 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added 
-- Rank now shows as Badges on Trainer Card
-- Forfeiting Trainer Battles is now allowed
-- Roadblocks around the City (RMXP-only)
-- Rewards for 4th and 5th Rank
 
 ### Removed
 
 ### Changed
+
+### Fixed
+
+## [0.1.1]
+
+### Added 
+- Rank now shows as Badges on Trainer Card
+- Forfeiting Trainer Battles is now allowed
+- Roadblocks around the City (RMXP-only)
+- Rewards for 4th and 5th Rank
 
 ### Fixed
 - upgradeLicense now displays all inherent benefits and updates the box as intended
@@ -32,5 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Log Battles as JSON for future processing with Machine Learning
 
 
-[unreleased]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/ambroSnoopi/pkmnGym/releases/tag/v0.1.0
