@@ -21,7 +21,7 @@ class GymLeader #< Player
 
     def initialize(type)
         @currentType = type
-        @type = @currentType
+        @type = type
         @rep = 100
         @rank = 0
         gcFillBox(type, self.starterLevel)
@@ -79,13 +79,11 @@ class GymLeader #< Player
         when 4
             pbMessage(_INTL("Prof. Aid: There are powerfull items, which can drastically improve the usability of a Pokémon. You should start experimenting with it."))
             pbReceiveItem(:CHOICEBAND)
-            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
-            #TODO: add ShopKeeper for battle items
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
         when 5
             pbMessage(_INTL("Prof. Aid: Did you know that certain Pokémon can only evolve by interacting with a specific item? Check this one out!"))
             pbReceiveItem(:MOONSTONE)
-            #pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
-            #TODO: add ShopKeeper
+            pbMessage(_INTL("Caledon City has recieved a parcel from Prof. Oak."))
         when 6
             pbMessage(_INTL("Prof. Aid: Did you know that it is possible to alter a Pokémon's Nature by using specific Item on them? This is most intriguing..."))
             #TODO: add MINT items to the game...
@@ -117,6 +115,7 @@ class GymLeader #< Player
 
     def switchType(type)
         @currentType = type
+        @type = type
         $player.party = []
         gcUpdateBox(type, self.starterLevel, @rank >= LEGENDARIES_UNLOCK_RANK)
     end

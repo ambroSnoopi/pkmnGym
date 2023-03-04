@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rank now shows as Badges on Trainer Card
 - Forfeiting Trainer Battles is now allowed
 - Roadblocks around the City (RMXP-only)
+- Rewards for 4th and 5th Rank
 
 ### Removed
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - upgradeLicense now displays all inherent benefits and updates the box as intended
+- switching type is preserved & displayed properly
 - fixed new game intro (RMXP-only)
 
 ## [0.1.0] - 2023-03-02 - ALPHA
