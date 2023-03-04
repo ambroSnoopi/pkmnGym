@@ -46,8 +46,8 @@ class Battle
           @decision = 2
           return 1
         end
-      elsif @internalBattle
-        pbDisplayPaused(_INTL("No! There's no running from a Trainer battle!"))
+      #elsif @internalBattle
+      #  pbDisplayPaused(_INTL("No! There's no running from a Trainer battle!"))
       elsif pbDisplayConfirm(_INTL("Would you like to forfeit the match and quit now?"))
         pbSEPlay("Battle flee")
         pbDisplay(_INTL("{1} forfeited the match!", self.pbPlayer.name))

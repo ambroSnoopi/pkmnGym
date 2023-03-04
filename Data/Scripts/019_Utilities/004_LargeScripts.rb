@@ -6,7 +6,7 @@ def berryPokemonMart(discount=false)
     if discount
         setPrice(:CHERIBERRY, 20)
     end
-    pbPokemonMart([
+    pbPokemonMart([ #TODO use GameData::Item.each to find all relevant items instead
         :CHERIBERRY    ,
         :CHESTOBERRY   ,
         :PECHABERRY    ,
