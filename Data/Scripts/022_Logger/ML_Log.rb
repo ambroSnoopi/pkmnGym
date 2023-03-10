@@ -19,6 +19,8 @@ class ML_Log
                 v.each_with_index { |x, i| v[i] = x.prep_json if x.respond_to?(:as_json) }
             when v.is_a?(Integer)
                 v
+            when v.nil?
+                v="" #TODO why isnt this working?
             else
                 v.to_s 
             end
@@ -40,6 +42,7 @@ class ML_Log
         str.gsub!("\\\"", "\"")
         str.gsub!(",", ",\n")
         str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
+        str.gsub!('nil,', '"",') #idk why above .nil? case doesnt catch these
         return str
     end
 
@@ -64,6 +67,7 @@ class BattleLog < ML_Log
     attr_reader   :player           # Player trainer (or array of trainers)
     attr_reader   :opponent         # Opponent trainer (or array of trainers)  
     attr_accessor :decision
+    attr_reader   :gameVersion
     # Results of battle:
     #    0 - Undecided or aborted
     #    1 - Player won
@@ -79,13 +83,15 @@ class BattleLog < ML_Log
         @decision    = 0
 
         @gameVersion = Settings::GAME_VERSION
+
         @dir   = dir
         @fname = fname
         @hmap = {
             :id        => @id, 
             :player    => @player, 
             :opponent  => @opponent,
-            :decision  => @decision
+            :decision  => @decision,
+            :gameVersion => @gameVersion
         }
     end
 end
