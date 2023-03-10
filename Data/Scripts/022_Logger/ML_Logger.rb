@@ -44,7 +44,7 @@ class ML_Logger
     #called in pbEndOfBattle
     def self.endBattle(decision)
         if decision > 0
-            @@battlelogs[@@battleID].decision = decision
+            @@battlelogs[@@battleID].decision=decision #TODO: This isnt working
             @@battlelogs[@@battleID].to_json(@@battleLogDir, "battle#{@@battleID}-end")
         end
     end

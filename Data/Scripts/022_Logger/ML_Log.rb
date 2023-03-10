@@ -8,7 +8,8 @@ class ML_Log
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
     #return a JSON String representation of the hmap
-    def prep_json(hmap = @hmap)
+    def prep_json
+        hmap = self.hmap
         h = hmap.merge #copy
         h.transform_keys!(&:to_s) 
         h.transform_values!{|v| 
@@ -28,8 +29,8 @@ class ML_Log
         return h
     end
     
-    def as_json(hmap = @hmap)
-        h = prep_json(hmap)
+    def as_json
+        h = self.prep_json
         #echoln "Hashmap of MLLog before prettyfication:"
         #echoln h
         str = h.to_s
@@ -80,13 +81,16 @@ class BattleLog < ML_Log
         @id         = id
         @player     = TrainerLog.new(battle.player[0])
         @opponent   = TrainerLog.new(battle.opponent[0]) #no double-battles support
-        @decision    = 0
+        @decision   = 0
 
         @gameVersion = Settings::GAME_VERSION
 
         @dir   = dir
         @fname = fname
-        @hmap = {
+    end
+
+    def hmap #dynamic to get updates on @decision
+        return {
             :id        => @id, 
             :player    => @player, 
             :opponent  => @opponent,
