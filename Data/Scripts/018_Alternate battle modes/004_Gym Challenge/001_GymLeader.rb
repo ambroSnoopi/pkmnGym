@@ -35,7 +35,7 @@ class GymLeader #< Player
     def win
         @rep < self.repNxtRank ? @rep += 20 : @rep += 1
         pbMessage(_INTL("Your Reputation has increased to {1}.", @rep))
-        pbMessage(_INTL("Congratulation! Your Repution is now high enough to upgrade your License.")) if @rep <= self.repNxtRank
+        pbMessage(_INTL("Congratulation! Your Repution is now high enough to upgrade your License.")) if @rep >= self.repNxtRank
     end
 
     def lose
