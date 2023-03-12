@@ -43,7 +43,7 @@ class ML_Log
         str.gsub!("\\\"", "\"")
         str.gsub!(",", ",\n")
         str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
-        str.gsub!('nil,', '","') #idk why above .nil? case doesnt catch these
+        str.gsub!('nil,', '"",') #idk why above .nil? case doesnt catch these
         str.gsub!('#','') #bc python cant handle this :)
         return str
     end
