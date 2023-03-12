@@ -11,6 +11,7 @@ Data/*
 # Machine Learning Logs folder, but not the example folder
 ML/logs/*
 !ML/logs/battle0/
+!ML/Overview.xlsx
 
 # Files in the main project folder
 Game.ini
