@@ -14,7 +14,7 @@ class GymLeader #< Player
 
     #RANK       0   1   2   3   4   5   6   7   8   9   10  11  12  13  14
     LVL_CAPS = [5,  10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100] #max level for each rank, index 0 required for starter level
-    PKMN_CAPS= [1 ,2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  6,  6,  6,  6] #max pkm for each rank, skipping index 0
+    PKMN_CAPS= [1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  6,  6,  6,  6,  6] #max pkm for each rank, skipping index 0
     EV_CAPS  = [0 ,50, 100,150,200,250,300,350,400,450,500,510,510,510,510] #max EV per pkm for each rank, skipping index 0
     LEGENDARIES_UNLOCK_RANK = 14
     REP_PER_RANK = 100
@@ -35,6 +35,7 @@ class GymLeader #< Player
     def win
         @rep < self.repNxtRank ? @rep += 20 : @rep += 1
         pbMessage(_INTL("Your Reputation has increased to {1}.", @rep))
+        pbMessage(_INTL("Congratulation! Your Repution is now high enough to upgrade your License.")) if @rep <= self.repNxtRank
     end
 
     def lose

@@ -22,7 +22,7 @@ class ML_Logger
         @@situationID=0
         self.incrBattleID
         battleLog = BattleLog.new(@@battleID, battle)
-        battleLog.to_json(@@battleLogDir, "battle#{@@battleID}")
+        battleLog.to_json(@@battleLogDir)
         @@battlelogs[@@battleID] = battleLog
     end
 
@@ -34,9 +34,9 @@ class ML_Logger
 
     #called in: pbOnAllBattlersEnteringBattle, pbEndOfRoundPhase
     def self.endTurn(battle)
-        turnLog = TurnLog.new(@@battleID, @@turnID, battle)
+        turnLog = TurnLog.new(@@battleID, @@turnID, battle, @@battleLogDir, 1, "end")
         #turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}") #currently there is no need to store turn logs in a seperate folder
-        turnLog.to_json(@@battleLogDir, "turn#{@@turnID}-end")
+        turnLog.to_json(@@battleLogDir)
         @@turnID+=1
         @@situationID=0
     end
@@ -44,8 +44,10 @@ class ML_Logger
     #called in pbEndOfBattle
     def self.endBattle(decision)
         if decision > 0
-            @@battlelogs[@@battleID].decision=decision #TODO: This isnt working
-            @@battlelogs[@@battleID].to_json(@@battleLogDir, "battle#{@@battleID}-end")
+            @@battlelogs[@@battleID].decision=decision
+            @@battlelogs[@@battleID].sid=1
+            @@battlelogs[@@battleID].sLabel="end"
+            @@battlelogs[@@battleID].to_json(@@battleLogDir)
         end
     end
   
@@ -62,9 +64,9 @@ class ML_Logger
     #   pbCommandPhase
     #situations: "preSwitch", ?
     def self.newState(battle, situation)
-        turnLog = TurnLog.new(@@battleID, @@turnID, battle)
+        turnLog = TurnLog.new(@@battleID, @@turnID, battle, @@battleLogDir, @@situationID, situation)
         #turnLog.to_json(@@battleLogDir+"/turn#{@@turnID}", "turn#{@@turnID}") #currently there is no need to store turn logs in a seperate folder
-        turnLog.to_json(@@battleLogDir, "turn#{@@turnID}-s#{@@situationID}-#{situation}")
+        turnLog.to_json(@@battleLogDir)
         @@situationID+=1
     end
 end

@@ -401,8 +401,8 @@ def pbRaiseEffortValues(pkmn, stat, evGain = 10, no_ev_cap = false)
   evTotal = 0
   GameData::Stat.each_main { |s| evTotal += pkmn.ev[s.id] }
   evGain = evGain.clamp(0, Pokemon::EV_STAT_LIMIT - pkmn.ev[stat])
-  evGain = evGain.clamp(0, $gcGymLeader.evCap - pkmn.ev[stat]) if !no_ev_cap
-  evGain = evGain.clamp(0, Pokemon::EV_LIMIT - evTotal)
+  evGain = evGain.clamp(0, ($gcGymLeader.evCap - pkmn.ev[stat])<0 ? 0 : ($gcGymLeader.evCap - pkmn.ev[stat])) if !no_ev_cap
+  evGain = evGain.clamp(0, ($gcGymLeader.evCap - evTotal)<0 ? 0 : ($gcGymLeader.evCap - evTotal))
   if evGain > 0
     pkmn.ev[stat] += evGain
     pkmn.calc_stats
@@ -415,7 +415,7 @@ def pbMaxUsesOfEVRaisingItem(stat, amt_per_use, pkmn, no_ev_cap = false)
   amt_can_gain = max_per_stat - pkmn.ev[stat]
   ev_total = 0
   GameData::Stat.each_main { |s| ev_total += pkmn.ev[s.id] }
-  amt_can_gain = [amt_can_gain, Pokemon::EV_LIMIT - ev_total].min
+  amt_can_gain = [amt_can_gain, $gcGymLeader.evCap - ev_total].min
   return [(amt_can_gain.to_f / amt_per_use).ceil, 1].max
 end
 

@@ -8,13 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added 
+- gameVersion, rep, sid & label to logs
+- notification when your rep is high enough for an upgrade
 
 ### Removed
 
 ### Changed
+- naming of logs
 
 ### Fixed
-- various fixes to logs ("nil", gameVersion, decision)
+- decision, "#" & "nil" handling in logs
+- EV capped as indended when using Vitamins (possibly also in battles)
+- missleading msg when cancelling "Switch Type" at Prof Aid (RMXP-only)
+- Vitamins shopkeeper dissapearing after 1st interaction (RMXP-only)
 
 ## [0.1.1]
 

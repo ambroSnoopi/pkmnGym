@@ -43,7 +43,8 @@ class ML_Log
         str.gsub!("\\\"", "\"")
         str.gsub!(",", ",\n")
         str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
-        str.gsub!('nil', '""') #idk why above .nil? case doesnt catch these
+        str.gsub!('nil,', '","') #idk why above .nil? case doesnt catch these
+        str.gsub!('#','') #bc python cant handle this :)
         return str
     end
 
@@ -53,7 +54,7 @@ class ML_Log
 
     #writes a JSON representation of the Objet to a File
     #optionally update dir & fname
-    def to_json(dir = @dir, fname = @fname)
+    def to_json(dir = @dir, fname = self.fname)
         @dir = dir
         @fname = fname
         Dir.mkdir(dir) if !File.directory?(dir)
@@ -64,7 +65,9 @@ end
 #Data Class of Battle for general static Metadate
 #Given a Battle Class it will extract & store all relevant information, similar to TurnLog
 class BattleLog < ML_Log
-    attr_reader   :id
+    attr_reader   :id               # identifying a battle
+    attr_accessor :sid              # identifying a snapshot
+    attr_accessor :sLabel           # label/name for the snapshot, also used for the filename
     attr_reader   :player           # Player trainer (or array of trainers)
     attr_reader   :opponent         # Opponent trainer (or array of trainers)  
     attr_accessor :decision
@@ -77,25 +80,35 @@ class BattleLog < ML_Log
     #    4 - Wild Pokémon was caught
     #    5 - Draw
 
-    def initialize(id, battle, dir = @dir, fname = @fname)
+    def initialize(id, battle, dir = @dir, sid = 0, sLabel = "default")
         @id         = id
+        @sid        = sid
+        @sLabel     = sLabel
         @player     = TrainerLog.new(battle.player[0])
         @opponent   = TrainerLog.new(battle.opponent[0]) #no double-battles support
         @decision   = 0
+        @rep        = $gcGymLeader.rep
 
         @gameVersion = Settings::GAME_VERSION
 
         @dir   = dir
-        @fname = fname
     end
 
+    def fname
+        return "battle-#{@id}-#{@sid}-#{@sLabel}"
+    end
+    
     def hmap #dynamic to get updates on @decision
         return {
             :id        => @id, 
+            :sid       => @sid,
+            :sLabel    => @sLabel,
             :player    => @player, 
             :opponent  => @opponent,
             :decision  => @decision,
-            :gameVersion => @gameVersion
+            :gameVersion => @gameVersion,
+            :rep        => @rep
+
         }
     end
 end
@@ -143,11 +156,12 @@ class TurnLog < ML_Log
     attr_accessor :lastMoveUser     # Last move user
     #TBC
 
-    def initialize(battleID, turnID, battle, dir = @dir, fname = @fname)
+    def initialize(battleID, turnID, battle, dir = @dir, sid = 0, sLabel = "default")
 
         @battleID = battleID
         @turnID = turnID
-
+        @sid        = sid
+        @sLabel     = sLabel
         @turnCount = battle.turnCount
         #@field = battle.field
         #@sides = battle.sides
@@ -170,10 +184,12 @@ class TurnLog < ML_Log
         #TODO LogClass views for all required objects
 
         @dir   = dir
-        @fname = fname
+        @fname = "b-#{battleID}-t-#{turnID}-#{sid}-#{sLabel}"
         @hmap = {
             :battleID   => @battleID,
             :turnID     => @turnID,
+            :sid        => @sid,
+            :sLabel     => @sLabel,
             :turnCount  => @turnCount,
             #:field     => @field,
             #:sides     => @sides,
