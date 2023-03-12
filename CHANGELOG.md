@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 - gameVersion, rep, sid & label to logs
+- DamageStateLog
 - notification when your rep is high enough for an upgrade
 
 ### Removed

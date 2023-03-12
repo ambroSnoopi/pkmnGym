@@ -280,7 +280,7 @@ class BattlerLog < ML_Log
         #@tookPhysicalHit       = battler.tookPhysicalHit      
         @statsRaisedThisRound  = battler.statsRaisedThisRound 
         @statsLoweredThisRound = battler.statsLoweredThisRound
-        @damageState           = battler.damageState          
+        @damageState           = DamageStateLog.new(battler.damageState)
 
         @gender                = battler.gender                         
 
@@ -325,25 +325,6 @@ end
 
 #Simplified Data Class for Battle::Move
 class MoveLog < ML_Log 
-    #attr_reader   :battle
-    #attr_reader   :realMove    #<Pokemon::Move>
-    attr_accessor :id
-    attr_reader   :name
-    attr_reader   :function
-    attr_reader   :baseDamage
-    attr_reader   :type
-    attr_reader   :category
-    attr_reader   :accuracy
-    attr_accessor :pp
-    attr_writer   :total_pp
-    attr_reader   :addlEffect
-    attr_reader   :target
-    attr_reader   :priority
-    attr_reader   :flags
-    #attr_accessor :calcType
-    #attr_accessor :powerBoost
-    #attr_accessor :snatched
-
     def initialize(battleMove)
         @hmap = {
             #:realMove   => battleMove.realMove  ,
@@ -360,7 +341,40 @@ class MoveLog < ML_Log
             :target     => battleMove.target    ,
             :priority   => battleMove.priority  ,
             :flags      => battleMove.flags
+            #:calcType
+            #:powerBoost
+            #:snatched
         }
     end
+end
 
+#Simplified Data Class for Battle::DamageState
+class DamageStateLog < ML_Log 
+    def initialize(dmgState)
+        @hmap = {
+            :typeMod             => dmgState.typeMod           ,# Type effectiveness
+            :unaffected          => dmgState.unaffected        ,
+            :protected           => dmgState.protected         ,
+            :magicCoat           => dmgState.magicCoat         ,
+            :magicBounce         => dmgState.magicBounce       ,
+            :totalHPLost         => dmgState.totalHPLost       ,# Like hpLost, but cumulative over all hits
+            :fainted             => dmgState.fainted           ,# Whether battler was knocked out by the move
+            :missed              => dmgState.missed            ,# Whether the move failed the accuracy check
+            :affection_missed    => dmgState.affection_missed  ,
+            :invulnerable        => dmgState.invulnerable      ,# If the move missed due to two turn move invulnerability
+            :calcDamage          => dmgState.calcDamage        ,# Calculated damage
+            :hpLost              => dmgState.hpLost            ,# HP lost by opponent, inc. HP lost by a substitute
+            :critical            => dmgState.critical          ,# Critical hit flag
+            :affection_critical  => dmgState.affection_critical,
+            :substitute          => dmgState.substitute        ,# Whether a substitute took the damage
+            :focusBand           => dmgState.focusBand         ,# Focus Band used
+            :focusSash           => dmgState.focusSash         ,# Focus Sash used
+            :sturdy              => dmgState.sturdy            ,# Sturdy ability used
+            :disguise            => dmgState.disguise          ,# Disguise ability used
+            :iceFace             => dmgState.iceFace           ,# Ice Face ability used
+            :endured             => dmgState.endured           ,# Damage was endured
+            :affection_endured   => dmgState.affection_endured ,
+            :berryWeakened       => dmgState.berryWeakened      # Whether a type-resisting berry was used
+        }
+    end
 end
