@@ -116,3 +116,23 @@ Pokemon = CHARIZARD,63
     Item = SITRUSBERRY
 Pokemon = BLASTOISE,63
     Item = SITRUSBERRY
+#-------------------------------
+[SCIENTIST,Admin]
+Items = FULLRESTORE,FULLRESTORE
+LoseText = That was a good lesson.
+Pokemon = ONIX,12
+    Gender = male
+    Moves = DEFENSECURL,DIG
+    AbilityIndex = 0
+    Item = SITRUSBERRY
+    IV = 20,20,20,20,20,20
+Pokemon = ONIX,14
+    Name = Rocky
+    Gender = male
+    Shiny = yes
+    Moves = DIG,RAGE
+    AbilityIndex = 0
+    Item = SITRUSBERRY
+    IV = 20,20,20,20,20,20
+    Ball = HEAVYBALL
+#-------------------------------

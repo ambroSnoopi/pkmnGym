@@ -11,30 +11,43 @@ class ML_Log
     def prep_json
         hmap = self.hmap
         h = hmap.merge #copy
-        h.transform_keys!(&:to_s) 
-        h.transform_values!{|v| 
-            case
-            when v.respond_to?(:as_json)
-                v.prep_json
-            when v.is_a?(Array)
-                v.each_with_index { |x, i| v[i] = x.prep_json if x.respond_to?(:as_json) }
-            when v.is_a?(Integer)
-                v
-            when v.nil?
-                v="" #TODO why isnt this working?
-            else
-                v.to_s 
-            end
+        h.transform_keys!(&:to_s)
+        h.transform_values! { |v|
+          case
+          when v.respond_to?(:as_json)
+            v.prep_json
+          when v.is_a?(Array)
+            v.map { |x| handle_array(x) }
+          when v.is_a?(Integer)
+            v
+          when v.nil? || v == "nil"
+            ""
+          else
+            v.to_s
+          end
         }
         return h
     end
-    
+      
+    def handle_array(arr)
+        if arr.respond_to?(:as_json)
+          arr.prep_json
+        elsif arr.is_a?(Array)
+          arr.map { |x| handle_array(x) }
+        elsif arr.nil? || arr == "nil"
+          ""
+        else
+          arr.to_s
+        end
+    end
+
     def as_json
         h = self.prep_json
         #echoln "Hashmap of MLLog before prettyfication:"
         #echoln h
         str = h.to_s
         str.gsub!("=>", ": ")
+        str.gsub!('#','') #bc python cant handle this :)
         #handle nested json & prettify:
         str.gsub!("\"{", "{\n   ")
         str.gsub!("}\"", "}\n")
@@ -43,8 +56,6 @@ class ML_Log
         str.gsub!("\\\"", "\"")
         str.gsub!(",", ",\n")
         str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
-        str.gsub!('nil,', '"",') #idk why above .nil? case doesnt catch these
-        str.gsub!('#','') #bc python cant handle this :)
         return str
     end
 
