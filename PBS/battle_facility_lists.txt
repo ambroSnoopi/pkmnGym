@@ -33,3 +33,18 @@ Challenges = gcR1
 Trainers = gcR2_trainers.txt
 Pokemon = gcR2_pkmn.txt
 Challenges = gcR2
+#-------------------------------
+[TrainerList]
+Trainers = gcR3_trainers.txt
+Pokemon = gcR3_pkmn.txt
+Challenges = gcR3
+#-------------------------------
+[TrainerList]
+Trainers = gcR4_trainers.txt
+Pokemon = gcR4_pkmn.txt
+Challenges = gcR4
+#-------------------------------
+[TrainerList]
+Trainers = gcR5_trainers.txt
+Pokemon = gcR5_pkmn.txt
+Challenges = gcR5

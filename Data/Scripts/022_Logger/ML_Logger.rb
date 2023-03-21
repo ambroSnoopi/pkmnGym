@@ -4,7 +4,7 @@
 # Logs will be organized in ML/logs/battle[N]/turn[N]
 # for an example see ML/logs/battle0
 #===============================================================================
-class ML_Logger
+module ML_Logger
 
     ML_LOG_DIR = "ML/logs/battle"
     @@battleLogDir = ML_LOG_DIR+"0"
