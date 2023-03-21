@@ -69,7 +69,8 @@ class ML_Log
         @dir = dir
         @fname = fname
         Dir.mkdir(dir) if !File.directory?(dir)
-        File.open("#{dir}/#{fname}.json", "w") {|f| f.write(self.as_json) }
+        #File.open("#{dir}/#{fname}.json", "w") {|f| f.write(self.as_json) }
+        File.write("#{dir}/#{fname}.json", self.as_json)
     end
 end
 
