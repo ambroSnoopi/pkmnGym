@@ -8,36 +8,19 @@ class ML_Log
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
     #return a JSON String representation of the hmap
-    def prep_json
-        hmap = self.hmap
-        h = hmap.merge #copy
-        h.transform_keys!(&:to_s)
-        h.transform_values! { |v|
-          case
-          when v.respond_to?(:as_json)
-            v.prep_json
-          when v.is_a?(Array)
-            v.map { |x| handle_array(x) }
-          when v.is_a?(Integer)
-            v
-          when v.nil? || v == "nil"
-            ""
-          else
-            v.to_s
-          end
-        }
-        return h
-    end
-      
-    def handle_array(arr)
-        if arr.respond_to?(:as_json)
-          arr.prep_json
-        elsif arr.is_a?(Array)
-          arr.map { |x| handle_array(x) }
-        elsif arr.nil? || arr == "nil"
+    def prep_json(h = self.hmap)
+        case h
+        when Hash
+          h.transform_keys!(&:to_s)
+          h.transform_values! { |v| prep_json(v) }
+        when Array
+          h.map! { |v| prep_json(v) }
+        when Integer
+          h
+        when nil#, "nil"
           ""
         else
-          arr.to_s
+          h.to_s
         end
     end
 
@@ -49,11 +32,11 @@ class ML_Log
         str.gsub!("=>", ": ")
         str.gsub!('#','') #bc python cant handle this :)
         #handle nested json & prettify:
-        str.gsub!("\"{", "{\n   ")
-        str.gsub!("}\"", "}\n")
-        str.gsub!("\"[", "[\n   ")
-        str.gsub!("]\"", "]\n")
-        str.gsub!("\\\"", "\"")
+        str.gsub!('"{', "{\n   ")
+        str.gsub!('}"', "}\n")
+        str.gsub!('"[', "[\n   ")
+        str.gsub!(']"', "]\n")
+        str.gsub!('\"', '"')
         str.gsub!(",", ",\n")
         str.gsub!("\\n", "  ") #idk why these got printed but lets use it to our advantage :)
         return str
