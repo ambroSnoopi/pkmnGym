@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - naming of logs
 
 ### Fixed
-- decision, "#" & "nil" handling in logs
+- logger now records any battle regardless of the battle typ (incl. simulations)
+- decision, nested values, "#" & "nil" handling in logs
 - EV capped as indended when using Vitamins (possibly also in battles)
 - missleading msg when cancelling "Switch Type" at Prof Aid (RMXP-only)
 - Vitamins shopkeeper dissapearing after 1st interaction (RMXP-only)

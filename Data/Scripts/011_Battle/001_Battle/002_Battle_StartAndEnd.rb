@@ -267,6 +267,7 @@ class Battle
     pbParty(0).each { |pkmn| @peer.pbOnStartingBattle(self, pkmn, wildBattle?) if pkmn }
     pbParty(1).each { |pkmn| @peer.pbOnStartingBattle(self, pkmn, wildBattle?) if pkmn }
     begin
+      ML_Logger.newBattle(self)
       pbStartBattleCore
     rescue BattleAbortedException
       @decision = 0

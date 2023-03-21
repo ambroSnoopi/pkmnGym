@@ -140,7 +140,7 @@ class BattleChallenge
     battle = Battle.new(scene, $player.party, opponent.party, $player, opponent)
     # Set various other properties in the battle class
     BattleCreationHelperMethods.prepare_battle(battle)
-    ML_Logger.newBattle(battle)
+    #ML_Logger.newBattle(battle)
     # Perform the battle itself
     decision = 0
     pbBattleAnimation(pbGetTrainerBattleBGM(opponent)) {

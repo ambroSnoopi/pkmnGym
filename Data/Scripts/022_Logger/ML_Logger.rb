@@ -16,7 +16,7 @@ class ML_Logger
     #resets internal variables and creates directory
     #checks if the dir alrdy exist, if so calls itself recursivly to inc battleID (required after loading the game)
     #then logs metadata about the battle
-    #called in gcBattle before starting the battle
+    #called in def pbStartBattle of Data\Scripts\011_Battle\001_Battle\002_Battle_StartAndEnd.rb
     def self.newBattle(battle)
         @@turnID=0
         @@situationID=0
