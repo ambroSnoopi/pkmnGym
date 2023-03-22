@@ -134,8 +134,6 @@ end
 #Data Class of Battle for dynamic Round related data
 #Given a Battle Class it will extract & store all relevant information, similar to BattleLog
 class TurnLog < ML_Log
-    attr_reader   :battleID
-    attr_reader   :turnID
     #from Battle class
     attr_reader   :turnCount
     #attr_reader   :field            # Effects common to the whole of a battle
@@ -149,54 +147,39 @@ class TurnLog < ML_Log
     #attr_reader   :usedInBattle     # Whether each Pokémon was used in battle (for Burmy)
     attr_accessor :lastMoveUsed     # Last move used
     attr_accessor :lastMoveUser     # Last move user
-    #TBC
+    #TODO: TBC with additional attributes
 
     def initialize(battleID, turnID, battle, dir = @dir, sid = 0, sLabel = "default")
-
-        @battleID = battleID
-        @turnID = turnID
-        @sid        = sid
-        @sLabel     = sLabel
-        @turnCount = battle.turnCount
-        #@field = battle.field
-        #@sides = battle.sides
-        #@positions = battle.positions
-        @battler0 = BattlerLog.new(battleID, turnID, battle.battlers[0]) #Player Pokemon
-        @battler1 = BattlerLog.new(battleID, turnID, battle.battlers[1]) #Opponents Pokemon
-        @items = battle.items
-        @ally_items = battle.ally_items
-        for choice in battle.choices
+        @choices = [] #making a deep copy
+        for c in battle.choices
+            choice = c.clone
             case choice[0] #Possible Cases: :None, :UseMove, :SwitchOut, :UseItem, :Call, :Run, :Shift 
             when :UseMove
                 choice[2] = choice[2].id.to_s
             end
             choice[0] = choice[0].to_s
+            @choices.append(choice)
         end
-        @choices = battle.choices
-        #@usedInBattle = battle.usedInBattle
-        @lastMoveUsed = battle.lastMoveUsed
-        @lastMoveUser = battle.lastMoveUser
-        #TODO LogClass views for all required objects
 
         @dir   = dir
         @fname = "b-#{battleID}-t-#{turnID}-#{sid}-#{sLabel}"
         @hmap = {
-            :battleID   => @battleID,
-            :turnID     => @turnID,
-            :sid        => @sid,
-            :sLabel     => @sLabel,
-            :turnCount  => @turnCount,
+            :battleID   => battleID,
+            :turnID     => turnID,
+            :sid        => sid,
+            :sLabel     => sLabel,
+            :turnCount  => battle.turnCount,
             #:field     => @field,
             #:sides     => @sides,
             #:positions      => @positions,
-            :battler0      => @battler0,
-            :battler1      => @battler1,
-            :items      => @items,
-            :ally_items      => @ally_items,
+            :battler0      => BattlerLog.new(battleID, turnID, battle.battlers[0]), #Player Pokemon
+            :battler1      => BattlerLog.new(battleID, turnID, battle.battlers[1]), #Opponents Pokemon
+            :items      => battle.items,
+            :ally_items      => battle.ally_items,
             :choices      => @choices,
-            #:usedInBattle      => @usedInBattle,
-            :lastMoveUsed      => @lastMoveUsed,
-            :lastMoveUser      => @lastMoveUser
+            #:usedInBattle      => battle.usedInBattle
+            :lastMoveUsed      => battle.lastMoveUsed,
+            :lastMoveUser      => battle.lastMoveUser
         }
     end
 end
