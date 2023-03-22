@@ -224,79 +224,48 @@ class BattlerLog < ML_Log
     attr_accessor :damageState
     # Properties from Pokémon
     attr_reader   :gender
+    #TODO: TBC with additional attributes
 
     def initialize(battleID, turnID, battler, dir = @dir, fname = @fname)
-
-        @battleID = battleID
-        @turnID = turnID
-        @index = battler.index
-
-        @species = battler.species
-        @ability_id = battler.ability_id
-        @item_id = battler.item_id
         @moves = []
         battler.moves.each { |m| @moves.push(MoveLog.new(m))}
-        #battler.moves.each { |m| @moves.push(m.id.to_s)} #workaround
-        @plainStats = battler.plainStats.transform_keys(&:to_s) 
-        @totalhp = battler.totalhp
-        @hp = battler.hp
-        @stages = battler.stages.transform_keys(&:to_s) 
-
-        @turnCount = battler.turnCount
-        @participants = battler.participants
-
-        @lastAttacker          = battler.lastAttacker         
-        @lastFoeAttacker       = battler.lastFoeAttacker      
-        @lastMoveUsed          = battler.lastMoveUsed         
-        @lastMoveUsedType      = battler.lastMoveUsedType     
-        @lastRegularMoveUsed   = battler.lastRegularMoveUsed  
 
         @movesUsed = []
         battler.movesUsed.each { |m| @movesUsed.push(m.to_s)}
         #battler.movesUsed.each { |m| @movesUsed.push(MoveLog.new(m))}  #unfortunately, "m" here is just a Symbol
 
-        #@tookPhysicalHit       = battler.tookPhysicalHit      
-        @statsRaisedThisRound  = battler.statsRaisedThisRound 
-        @statsLoweredThisRound = battler.statsLoweredThisRound
-        @damageState           = DamageStateLog.new(battler.damageState)
-
-        @gender                = battler.gender                         
-
-        #TODO LogClass views for all required objects
-
         @dir   = dir
         @fname = fname
         @hmap = {
-            :battleID   => @battleID,
-            :turnID     => @turnID,
-            :index      => @index,
+            :battleID   => battleID,
+            :turnID     => turnID,
+            :index      => battler.index,
 
-            :species    => @species,
-            :ability_id => @ability_id,
-            :item_id    => @item_id,
+            :species    => battler.species,
+            :level      => battler.level,
+            :gender     => battler.gender,
+            :ability_id => battler.ability_id,
+            :item_id    => battler.item_id,
+            :plainStats => battler.plainStats.transform_keys(&:to_s),
+            :totalhp    => battler.totalhp,
+            :hp         => battler.hp,
+            :stages     => battler.stages.transform_keys(&:to_s) ,
+
             :moves      => @moves,
-            :plainStats => @plainStats,
-            :totalhp    => @totalhp,
-            :hp         => @hp,
-            :stages     => @stages,
+            :movesUsed  => @movesUsed, 
 
-            :turnCount  => @turnCount,
-            :participants => @participants,
-            :lastAttacker          => @lastAttacker,         
-            :lastFoeAttacker       => @lastFoeAttacker,      
-            :lastHPLost            => @lastHPLost,           
-            :lastHPLostFromFoe     => @lastHPLostFromFoe,    
-            :lastMoveUsed          => @lastMoveUsed,         
-            :lastMoveUsedType      => @lastMoveUsedType,     
-            :lastRegularMoveUsed   => @lastRegularMoveUsed,  
-			
-            :movesUsed             => @movesUsed,            
-		 
-            :statsRaisedThisRound  => @statsRaisedThisRound, 
-            :statsLoweredThisRound => @statsLoweredThisRound,
-            :damageState           => @damageState,          
-			
-            :gender                => @gender          
+            :turnCount  => battler.turnCount,
+            :participants          => battler.participants, #only relevant in doubles?
+            :lastAttacker          => battler.lastAttacker, #only relevant in doubles?      
+            :lastFoeAttacker       => battler.lastFoeAttacker,      
+            :lastHPLost            => battler.lastHPLost,   #only relevant in doubles?   
+            :lastHPLostFromFoe     => battler.lastHPLostFromFoe,    
+            :lastMoveUsed          => battler.lastMoveUsed,         
+            :lastMoveUsedType      => battler.lastMoveUsedType,     
+            :lastRegularMoveUsed   => battler.lastRegularMoveUsed,             
+            :statsRaisedThisRound  => battler.statsRaisedThisRound, 
+            :statsLoweredThisRound => battler.statsLoweredThisRound,
+            :damageState           => DamageStateLog.new(battler.damageState)        
         }
     end
 end
