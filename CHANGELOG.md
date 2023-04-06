@@ -9,14 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 - gameVersion, rep, sid & label to logs
-- DamageStateLog
+- DamageStateLog, PokemonLog
 - level to battler log
+- party to trainer log
 - notification when your rep is high enough for an upgrade
+- ML_VERSION
 
 ### Removed
 
 ### Changed
 - naming of logs
+- MoveLog now relates to Pokemon_Move not Battle_Move
 
 ### Fixed
 - logger now records any battle regardless of the battle typ (incl. simulations)

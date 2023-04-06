@@ -7,6 +7,8 @@ class ML_Log
     attr_accessor :dir              # Directory Path to where the Log shall be saved
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
+    ML_VERSION = 0.1
+
     #return a JSON String representation of the hmap
     def prep_json(h = self.hmap)
         case h
@@ -102,8 +104,8 @@ class BattleLog < ML_Log
             :opponent  => @opponent,
             :decision  => @decision,
             :gameVersion => @gameVersion,
-            :rep        => @rep
-
+            :rep        => @rep,
+            :mlVersion => ML_VERSION
         }
     end
 end
@@ -111,22 +113,11 @@ end
 #Wrapper Data Class of Trainer
 #Given a Trainer Class it will extract & store all relevant information
 class TrainerLog < ML_Log 
-    attr_reader :id
-    attr_reader :trainer_type
-    attr_reader :name
-    attr_reader :version
-
     def initialize(trainer, dir = @dir, fname = @fname)
-        @id             = trainer.id
-        @trainer_type   = trainer.trainer_type
-        @name           = trainer.name
-
-        @dir   = dir
-        @fname = fname
         @hmap = {
-            :id             => @id, 
-            :trainer_type   => @trainer_type, 
-            :name           => @name
+            :id             => trainer.id, 
+            :trainer_type   => trainer.trainer_type, 
+            :name           => trainer.name
         }
     end
 end
@@ -161,6 +152,11 @@ class TurnLog < ML_Log
             @choices.append(choice)
         end
 
+        @party0 = []
+        battle.player[0].party.each { |p| @party0.push(PokemonLog.new(p))}
+        @party1 = []
+        battle.opponent[0].party.each { |p| @party1.push(PokemonLog.new(p))}
+
         @dir   = dir
         @fname = "b-#{battleID}-t-#{turnID}-#{sid}-#{sLabel}"
         @hmap = {
@@ -179,7 +175,9 @@ class TurnLog < ML_Log
             :choices      => @choices,
             #:usedInBattle      => battle.usedInBattle
             :lastMoveUsed      => battle.lastMoveUsed,
-            :lastMoveUser      => battle.lastMoveUser
+            :lastMoveUser      => battle.lastMoveUser,
+            :party0 => @party0, #Player Party
+            :party1 => @party1  #Opponent Party
         }
     end
 end
@@ -228,7 +226,7 @@ class BattlerLog < ML_Log
 
     def initialize(battleID, turnID, battler, dir = @dir, fname = @fname)
         @moves = []
-        battler.moves.each { |m| @moves.push(MoveLog.new(m))}
+        battler.moves.each { |m| @moves.push(MoveLog.new(m.realMove))}
 
         @movesUsed = []
         battler.movesUsed.each { |m| @movesUsed.push(m.to_s)}
@@ -270,24 +268,24 @@ class BattlerLog < ML_Log
     end
 end
 
-#Simplified Data Class for Battle::Move
+#Simplified Data Class for Pokemon::Move
 class MoveLog < ML_Log 
-    def initialize(battleMove)
+    def initialize(pkmnMove)
         @hmap = {
             #:realMove   => battleMove.realMove  ,
-            :id         => battleMove.id        ,
-            :name       => battleMove.name      ,
-            :function   => battleMove.function  ,
-            :baseDamage => battleMove.baseDamage,
-            :type       => battleMove.type      ,
-            :category   => battleMove.category  ,
-            :accuracy   => battleMove.accuracy  ,
-            :pp         => battleMove.pp        ,
-            :total_pp   => battleMove.total_pp  ,
-            :addlEffect => battleMove.addlEffect,
-            :target     => battleMove.target    ,
-            :priority   => battleMove.priority  ,
-            :flags      => battleMove.flags
+            :id         => pkmnMove.id        ,
+            :name       => pkmnMove.name      ,
+            :function   => pkmnMove.function_code  ,
+            :baseDamage => pkmnMove.base_damage,
+            :type       => pkmnMove.type      ,
+            :category   => pkmnMove.category  ,
+            :accuracy   => pkmnMove.accuracy  ,
+            :pp         => pkmnMove.pp        ,
+            :total_pp   => pkmnMove.total_pp  ,
+            :effectChance => pkmnMove.effect_chance,
+            :target     => pkmnMove.target    ,
+            :priority   => pkmnMove.priority  ,
+            :flags      => pkmnMove.flags
             #:calcType
             #:powerBoost
             #:snatched
@@ -322,6 +320,38 @@ class DamageStateLog < ML_Log
             :endured             => dmgState.endured           ,# Damage was endured
             :affection_endured   => dmgState.affection_endured ,
             :berryWeakened       => dmgState.berryWeakened      # Whether a type-resisting berry was used
+        }
+    end
+end
+
+#Data Class of Pokemon (uninitialized Battler)
+class PokemonLog < ML_Log
+    def initialize(pkmn)
+
+        moves = [] #bc thats a lie: @return [Array<Symbol>] the IDs of moves known by this Pokémon when it was obtained
+        pkmn.moves.each { |m| moves.push(MoveLog.new(m))}
+
+        @hmap = {
+            :species    => pkmn.species, # @return [Symbol] this Pokémon's species
+            :hp         => pkmn.hp, # @return [Integer] the current HP
+            :status     => pkmn.status, # @return [Symbol] this Pokémon's current status (see GameData::Status)
+            :statusCount => pkmn.statusCount, # @return [Integer] sleep count / toxic flag / 0: sleep (number of rounds before waking up), toxic (0 = regular poison, 1 = toxic)
+            :moves      => moves, 
+            # @return [Integer] calculated stats
+            :totalhp    => pkmn.totalhp,
+            :attack     => pkmn.attack, 
+            :defense    => pkmn.defense, 
+            :spatk      => pkmn.spatk, 
+            :spdef      => pkmn.spdef, 
+            :speed      => pkmn.speed,
+            :level      => pkmn.level,
+            :types      => pkmn.types, # @return [Array<Symbol>] an array of this Pokémon's types
+            :gender     => pkmn.gender, # @return [0, 1, 2] this Pokémon's gender (0 = male, 1 = female, 2 = genderless)
+            #ability # @return [GameData::Ability, nil] an Ability object corresponding to this Pokémon's ability
+            :ability_id => pkmn.ability_id, # @return [Symbol, nil] the ability symbol of this Pokémon's ability
+            #item # @return [GameData::Item, nil] an Item object corresponding to this Pokémon's item
+            :item_id    => pkmn.item_id,
+            :baseStats  => pkmn.baseStats # @return [Hash<Integer>] this Pokémon's base stats, a hash with six key/value pairs
         }
     end
 end
