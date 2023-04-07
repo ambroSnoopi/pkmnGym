@@ -141,14 +141,14 @@ class TurnLog < ML_Log
     #TODO: TBC with additional attributes
 
     def initialize(battleID, turnID, battle, dir = @dir, sid = 0, sLabel = "default")
+
         @choices = [] #making a deep copy
         for c in battle.choices
             choice = c.clone
             case choice[0] #Possible Cases: :None, :UseMove, :SwitchOut, :UseItem, :Call, :Run, :Shift 
             when :UseMove
-                choice[2] = choice[2].id.to_s
+                choice[2] = MoveLog.new(choice[2].realMove)
             end
-            choice[0] = choice[0].to_s
             @choices.append(choice)
         end
 
@@ -168,16 +168,16 @@ class TurnLog < ML_Log
             #:field     => @field,
             #:sides     => @sides,
             #:positions      => @positions,
-            :battler0      => BattlerLog.new(battleID, turnID, battle.battlers[0]), #Player Pokemon
-            :battler1      => BattlerLog.new(battleID, turnID, battle.battlers[1]), #Opponents Pokemon
+            :battler0   => BattlerLog.new(battleID, turnID, battle.battlers[0]), #Player Pokemon
+            :battler1   => BattlerLog.new(battleID, turnID, battle.battlers[1]), #Opponents Pokemon
             :items      => battle.items,
-            :ally_items      => battle.ally_items,
-            :choices      => @choices,
+            :ally_items => battle.ally_items,
+            :choices    => @choices,
             #:usedInBattle      => battle.usedInBattle
             :lastMoveUsed      => battle.lastMoveUsed,
             :lastMoveUser      => battle.lastMoveUser,
-            :party0 => @party0, #Player Party
-            :party1 => @party1  #Opponent Party
+            :party0     => @party0, #Player Party
+            :party1     => @party1  #Opponent Party
         }
     end
 end

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - naming of logs
 - MoveLog now relates to Pokemon_Move not Battle_Move
+- Move in Choices is now logged using MoveLog not just the Symbol
 
 ### Fixed
 - logger now records any battle regardless of the battle typ (incl. simulations)
