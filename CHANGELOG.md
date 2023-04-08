@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added 
+
+### Removed
+### Changed
+
+### Fixed
+## [0.1.2]
+
+### Added 
 - gameVersion, rep, sid & label to logs
 - DamageStateLog, PokemonLog
 - level to battler log
@@ -52,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Log Battles as JSON for future processing with Machine Learning
 
 
-[unreleased]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/ambroSnoopi/pkmnGym/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/ambroSnoopi/pkmnGym/releases/tag/v0.1.0
