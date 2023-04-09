@@ -238,7 +238,8 @@ class BattlerLog < ML_Log
             :battleID   => battleID,
             :turnID     => turnID,
             :index      => battler.index,
-
+            :status     => battler.status,
+            :statusCount => battler.statusCount,
             :species    => battler.species,
             :level      => battler.level,
             :gender     => battler.gender,

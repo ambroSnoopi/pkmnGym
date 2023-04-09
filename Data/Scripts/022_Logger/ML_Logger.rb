@@ -39,6 +39,11 @@ module ML_Logger
         turnLog.to_json(@@battleLogDir)
         @@turnID+=1
         @@situationID=0
+        # FOR TESTING   #TODO: remove!
+        data = "test" #turnLog.to_s 
+        result = `python ML/models/dummy/echo-score.py "#{data}"`.chomp
+        echoln "AI would use the following move next: "
+        echoln result
     end
 
     #called in pbEndOfBattle

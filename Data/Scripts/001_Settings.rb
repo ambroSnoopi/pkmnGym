@@ -6,7 +6,7 @@
 
 module Settings
   # The version of your game. It has to adhere to the MAJOR.MINOR.PATCH format.
-  GAME_VERSION = "0.1.2"
+  GAME_VERSION = "0.1.3"
 
   # The generation that the battle system follows. Used throughout the battle
   # scripts, and also by some other settings which are used in and out of battle
@@ -436,3 +436,16 @@ module Essentials
   VERSION = "20.1"
   ERROR_TEXT = ""
 end
+
+  #=============================================================================
+  # For more informatin see: https://github.com/ambroSnoopi/pkmnGym#readme
+  # To use AI features you need to install PYTHON and the following Requirements:
+  # TODO: tbc
+
+  USE_ML = true    #whether your battles shall be logged for Machine Learning
+  USE_AI = false   #whether trained AI models shall be used for battle decisions
+
+  # To improve AI behaviour, consider contributing your logs to:
+  #    https://github.com/ambroSnoopi/pkmnGym/tree/master/ML/logs
+
+  #=============================================================================
