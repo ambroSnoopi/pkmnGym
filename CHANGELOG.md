@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
+- Testing: Python Interface for AI Models
+- Status & -count to Battler Log
 ### Removed
 ### Changed
 ### Fixed
