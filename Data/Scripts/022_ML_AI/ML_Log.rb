@@ -7,7 +7,7 @@ class ML_Log
     attr_accessor :dir              # Directory Path to where the Log shall be saved
     attr_accessor :fname            # Filename (Trunc without File-Ending/Type)
 
-    ML_VERSION = 0.1
+    ML_VERSION = 0.2
 
     #return a JSON String representation of the hmap
     def prep_json(h = self.hmap)
@@ -241,6 +241,7 @@ class BattlerLog < ML_Log
             :status     => battler.status,
             :statusCount => battler.statusCount,
             :species    => battler.species,
+            :types      => battler.types, #or pbTypes?
             :level      => battler.level,
             :gender     => battler.gender,
             :ability_id => battler.ability_id,

@@ -429,13 +429,6 @@ module Settings
     "choice 27",
     "choice 28"
   ]
-end
-
-# DO NOT EDIT THESE!
-module Essentials
-  VERSION = "20.1"
-  ERROR_TEXT = ""
-end
 
   #=============================================================================
   # For more informatin see: https://github.com/ambroSnoopi/pkmnGym#readme
@@ -444,8 +437,16 @@ end
 
   USE_ML = true    #whether your battles shall be logged for Machine Learning
   USE_AI = false   #whether trained AI models shall be used for battle decisions
+  ONLINE_AI = true #if false, you need to install PYTHON and the Requirements.txt
 
   # To improve AI behaviour, consider contributing your logs to:
   #    https://github.com/ambroSnoopi/pkmnGym/tree/master/ML/logs
 
   #=============================================================================
+end
+
+# DO NOT EDIT THESE!
+module Essentials
+  VERSION = "20.1"
+  ERROR_TEXT = ""
+end

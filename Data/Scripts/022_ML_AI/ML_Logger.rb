@@ -40,8 +40,18 @@ module ML_Logger
         @@turnID+=1
         @@situationID=0
         # FOR TESTING   #TODO: remove!
-        data = "test" #turnLog.to_s 
-        result = `python ML/models/dummy/echo-score.py "#{data}"`.chomp
+        #data = "test" #turnLog.to_s 
+        #result = `python ML/models/dummy/echo-score.py "#{data}"`.chomp
+        #echoln "AI would use the following move next: "
+        #echoln result #doesnt return anything (tbc)
+
+        #echoln "trying to make an HTTP call"
+        #ML_AI.testSocket #works
+
+        #echoln "trying to call AI through HTTP"
+        #ML_AI.runTest(); #https://stackoverflow.com/questions/76020053/tcpsocket-connection-to-azure-ml-endpoint 
+
+        result = `python "ML/models/maram-ml-kpwft/score.py"`.chomp
         echoln "AI would use the following move next: "
         echoln result
     end
