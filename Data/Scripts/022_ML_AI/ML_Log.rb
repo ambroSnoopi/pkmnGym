@@ -134,7 +134,7 @@ class TurnLog < ML_Log
     attr_reader   :battler1         # Currently active Pokémon
     attr_accessor :items            # Items held by opponents
     attr_accessor :ally_items       # Items held by allies
-    attr_accessor :choices          # Choices made by each Pokémon this round
+    attr_accessor :choices          # Choices made by each Pokémon this round 
     #attr_reader   :usedInBattle     # Whether each Pokémon was used in battle (for Burmy)
     attr_accessor :lastMoveUsed     # Last move used
     attr_accessor :lastMoveUser     # Last move user
@@ -146,7 +146,7 @@ class TurnLog < ML_Log
         for c in battle.choices
             choice = c.clone
             case choice[0] #Possible Cases: :None, :UseMove, :SwitchOut, :UseItem, :Call, :Run, :Shift 
-            when :UseMove
+            when :UseMove  #[:UseMove, idxMove, Move, Target] see def pbRegisterMove
                 choice[2] = MoveLog.new(choice[2].realMove)
             end
             @choices.append(choice)
@@ -246,7 +246,7 @@ class BattlerLog < ML_Log
             :gender     => battler.gender,
             :ability_id => battler.ability_id,
             :item_id    => battler.item_id,
-            :plainStats => battler.plainStats.transform_keys(&:to_s),
+            :plainStats => battler.plainStats.transform_keys(&:to_s), #why to_s?
             :totalhp    => battler.totalhp,
             :hp         => battler.hp,
             :stages     => battler.stages.transform_keys(&:to_s) ,
@@ -329,6 +329,10 @@ end
 #Data Class of Pokemon (uninitialized Battler)
 class PokemonLog < ML_Log
     def initialize(pkmn)
+        #for finding relevant attributes
+        #echoln pkmn.inspect
+        #echoln pkmn.instance_variables 
+        #echoln pkmn.local_variables
 
         moves = [] #bc thats a lie: @return [Array<Symbol>] the IDs of moves known by this Pokémon when it was obtained
         pkmn.moves.each { |m| moves.push(MoveLog.new(m))}

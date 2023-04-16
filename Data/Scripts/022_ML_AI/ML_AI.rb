@@ -4,225 +4,159 @@ require 'socket'
 #TODO: This is W.I.P.!
 class ML_AI
 
-    ONLINE_AI       = true #Setting::ONLINE_AI
+  ML_AI_DICT      = { #TODO: make it rep or trainer type based? move this config to a  PBS-style file?
+      :online => {
+          'action' => '',
+          :UseMove => 'ML/models/maram-ml-kpwft/score.py',
+          'switch' => ''},
+      :local  => {
+          'action' => '',
+          :UseMove => 'ML/models/AutoML0d3484f3424/scoring_file_v_2_0_0.py',
+          'switch' => ''}
+      }
 
-    ONLINE_MOVE_AI  = 'maram-ml-kpwft.northeurope.inference.ml.azure.com'
-    API_KEY         = 'i0d8pBfcE0hXEMVDQLJXRaNg81iS1hxy' 
-    DEPLOYMENT      = 'automl0d3484f3424-1'
+  def initialize(online=Settings::ONLINE_AI)
+    @mode = online ? :online : :local
+  end
 
-    LOCAL_MOVE_AI   = 'ML/models/dummy/echo-score.py'
 
-    ML_AI_DICT      = {
-        'online' => {
-            'action' =>{},
-            'move'   => {'url' => 'https://maram-ml-kpwft.northeurope.inference.ml.azure.com/score',
-                            'api_key' => 'i0d8pBfcE0hXEMVDQLJXRaNg81iS1hxy', #TODO: use secrets file
-                            'deployment' => 'automl0d3484f3424-1'},
-            'switch' => {}},
-        'local'  => {
-            'action' =>{},
-            'move'   => {'url' => 'ML/models/dummy/echo-score.py'},
-            'switch' => {}}
-        }
+  #TODO: should be called in def pbChooseMoves(idxBattler) of Battle::AI / especially considering AI skill levels
+  #but I'm lazy for now, so let's just catch it in def pbRegisterMove of Battle (004_Battle_ActionAttacksPriority.rb)
+  def inferMove(turnlog, idxBattler, battle)
 
-    def initialize(online=ONLINE_AI)
-        @online = online
+    #turnlog.hmap is of form {string => string/int} because prep_json replaces it inplace
+    #TODO: either store each attribute again outside of the hmap, or def restore, or alter how to_json works (make copy instead of inplace update)
+    #meanwhile using original values from battle
+    '''
+    h = turnlog.hmap
+    echoln h.class.to_s
+    h.each do |key, value|
+      echoln key.class.to_s+": "+value.class.to_s
+      echoln key.to_s+": "+value.to_s
+    end
+    if idxBattler==0
+      actor    = h[:battler0].hmap
+      opponent = h[:battler1].hmap
+    else
+      actor    = h[:battler1].hmap
+      opponent = h[:battler0].hmap
+    end
+    actor_move0 = actor[:moves][0].hmap
+    actor_move1 = actor[:moves][1].hmap
+    actor_move2 = actor[:moves][2].hmap
+    actor_move3 = actor[:moves][3].hmap
+
+    data = {
+      "--turnCount" => h.turnCount,
+      "--actor_move0_function" => actor_move0[:function],
+      "--actor_move0_baseDamage" => actor_move0[:baseDamage],
+      "--actor_move0_type" => actor_move0[:type],
+      "--actor_move0_category" => actor_move0[:category],
+      "--actor_move0_accuracy" => actor_move0[:accuracy],
+      "--actor_move0_priority" => actor_move0[:priority],
+      "--actor_move1_function" => actor_move1[:function],
+      "--actor_move1_baseDamage" => actor_move1[:baseDamage],
+      "--actor_move1_type" => actor_move1[:type],
+      "--actor_move1_category" => actor_move1[:category],
+      "--actor_move1_accuracy" => actor_move1[:accuracy],
+      "--actor_move1_priority" => actor_move1[:priority],
+      "--actor_move2_function" => actor_move2[:function],
+      "--actor_move2_baseDamage" => actor_move2[:baseDamage],
+      "--actor_move2_type" => actor_move2[:type],
+      "--actor_move2_category" => actor_move2[:category],
+      "--actor_move2_accuracy" => actor_move2[:accuracy],
+      "--actor_move2_priority" => actor_move2[:priority],
+      "--actor_move3_function" => actor_move3[:function],
+      "--actor_move3_baseDamage" => actor_move3[:baseDamage],
+      "--actor_move3_type" => actor_move3[:type],
+      "--actor_move3_category" => actor_move3[:category],
+      "--actor_move3_accuracy" => actor_move3[:accuracy],
+      "--actor_move3_priority" => actor_move3[:priority],
+      "--actor_attack" => actor[:plainStats]["ATTACK"],
+      "--actor_spatk" => actor[:plainStats]["SPECIAL_ATTACK"],
+      "--actor_spdef" => actor[:plainStats]["SPECIAL_DEFENSE"],
+      "--actor_totalhp" => actor[:totalhp],
+      "--actor_hp" => actor[:hp],
+      "--actor_stages_attack" => actor[:stages]["ATTACK"],
+      "--actor_stages_defense" => actor[:stages]["DEFENSE"],
+      "--actor_stages_spatk" => actor[:stages]["SPECIAL_ATTACK"],
+      "--actor_stages_spdef" => actor[:stages]["SPECIAL_DEFENSE"],
+      "--actor_stages_speed" => actor[:stages]["SPEED"],
+      "--actor_stages_accuracy" => actor[:stages]["ACCURACY"],
+      "--actor_stages_evasion" => actor[:stages]["EVASION"],
+      "--opponent_stages_attack" => opponent[:stages]["ATTACK"],
+      "--opponent_stages_defense" => opponent[:stages]["DEFENSE"],
+      "--opponent_stages_spatk" => opponent[:stages]["SPECIAL_ATTACK"],
+      "--opponent_stages_spdef" => opponent[:stages]["SPECIAL_DEFENSE"],
+      "--opponent_stages_speed" => opponent[:stages]["SPEED"],
+      "--opponent_stages_accuracy" => opponent[:stages]["ACCURACY"],
+      "--opponent_stages_evasion" => opponent[:stages]["EVASION"]
+    }
+    '''
+
+    if idxBattler==0
+      actor    = battle.battlers[0]
+      opponent = battle.battlers[1]
+    else
+      actor    = battle.battlers[1]
+      opponent = battle.battlers[0]
     end
 
-
-
-    def self.runTest(data = "{}")
-        #if @online
-        #TODO: transform into string
-        data =  '{
-            "Inputs": {
-              "data": [
-                {
-                  "Column2": "example_value",
-                  "turnCount": 0,
-                  "winner.move0.function": "example_value",
-                  "winner.move0.baseDamage": 0,
-                  "winner.move0.type": "example_value",
-                  "winner.move0.category": 0,
-                  "winner.move0.accuracy": 0,
-                  "winner.move0.priority": 0,
-                  "winner.move1.function": "example_value",
-                  "winner.move1.baseDamage": 0,
-                  "winner.move1.type": "example_value",
-                  "winner.move1.category": 0,
-                  "winner.move1.accuracy": 0,
-                  "winner.move1.priority": 0,
-                  "winner.move2.function": "example_value",
-                  "winner.move2.baseDamage": 0,
-                  "winner.move2.type": "example_value",
-                  "winner.move2.category": 0,
-                  "winner.move2.accuracy": 0,
-                  "winner.move2.priority": 0,
-                  "winner.move3.function": "example_value",
-                  "winner.move3.baseDamage": 0,
-                  "winner.move3.type": "example_value",
-                  "winner.move3.category": 0,
-                  "winner.move3.accuracy": 0,
-                  "winner.move3.priority": 0,
-                  "winner.attack": 0,
-                  "winner.spatk": 0,
-                  "winner.spdef": 0,
-                  "winner.totalhp": 0,
-                  "winner.hp": 0,
-                  "winner.stages.attack": 0,
-                  "winner.stages.defense": 0,
-                  "winner.stages.spatk": 0,
-                  "winner.stages.spdef": 0,
-                  "winner.stages.speed": 0,
-                  "winner.stages.accuracy": 0,
-                  "winner.stages.evasion": 0,
-                  "looser.stages.attack": 0,
-                  "looser.stages.defense": 0,
-                  "looser.stages.spatk": 0,
-                  "looser.stages.spdef": 0,
-                  "looser.stages.speed": 0,
-                  "looser.stages.accuracy": 0,
-                  "looser.stages.evasion": 0
-                }
-              ]
-            },
-            "GlobalParameters": {
-              "method": "predict"
-            }
-          }'
-            body = data
-
-            header = "Content-Type: application/json, Authorization: Bearer #{API_KEY}, azureml-model-deployment: automl0d3484f3424-1\r\n"
-            
-            socket = TCPSocket.open(ONLINE_MOVE_AI, 443)
-            socket.puts "POST score/ HTTPS/1.1\r\n"
-            socket.puts header
-            #socket.puts "\r\n"
-            socket.puts body
-            socket.puts "\r\n"
-
-            response = ''
-            while line = s.gets
-              puts line.chop
-                #response << line.chop
-            end
-            #echoln response
-            socket.close
-            return response
-        #end
+    data = {
+      "--turnCount"               => battle.turnCount,
+      "--actor_move0_function"    => actor.moves[0].realMove.function_code,
+      "--actor_move0_baseDamage"  => actor.moves[0].realMove.base_damage,
+      "--actor_move0_type"        => actor.moves[0].realMove.type,
+      "--actor_move0_category"    => actor.moves[0].realMove.category,
+      "--actor_move0_accuracy"    => actor.moves[0].realMove.accuracy,
+      "--actor_move0_priority"    => actor.moves[0].realMove.priority,
+      "--actor_move1_function"    => actor.moves[1].realMove.function_code,
+      "--actor_move1_baseDamage"  => actor.moves[1].realMove.base_damage,
+      "--actor_move1_type"        => actor.moves[1].realMove.type,
+      "--actor_move1_category"    => actor.moves[1].realMove.category,
+      "--actor_move1_accuracy"    => actor.moves[1].realMove.accuracy,
+      "--actor_move1_priority"    => actor.moves[1].realMove.priority,
+      "--actor_move2_function"    => actor.moves[2].realMove.function_code,
+      "--actor_move2_baseDamage"  => actor.moves[2].realMove.base_damage,
+      "--actor_move2_type"        => actor.moves[2].realMove.type,
+      "--actor_move2_category"    => actor.moves[2].realMove.category,
+      "--actor_move2_accuracy"    => actor.moves[2].realMove.accuracy,
+      "--actor_move2_priority"    => actor.moves[2].realMove.priority,
+      "--actor_move3_function"    => actor.moves[3].realMove.function_code,
+      "--actor_move3_baseDamage"  => actor.moves[3].realMove.base_damage,
+      "--actor_move3_type"        => actor.moves[3].realMove.type,
+      "--actor_move3_category"    => actor.moves[3].realMove.category,
+      "--actor_move3_accuracy"    => actor.moves[3].realMove.accuracy,
+      "--actor_move3_priority"    => actor.moves[3].realMove.priority,
+      "--actor_attack"            => actor.plainStats[:ATTACK],
+      "--actor_spatk"             => actor.plainStats[:SPECIAL_ATTACK],
+      "--actor_spdef"             => actor.plainStats[:SPECIAL_DEFENSE],
+      "--actor_totalhp"           => actor.totalhp,
+      "--actor_hp"                => actor.hp,
+      "--actor_stages_attack"     => actor.stages[:ATTACK],
+      "--actor_stages_defense"    => actor.stages[:DEFENSE],
+      "--actor_stages_spatk"      => actor.stages[:SPECIAL_ATTACK],
+      "--actor_stages_spdef"      => actor.stages[:SPECIAL_DEFENSE],
+      "--actor_stages_speed"      => actor.stages[:SPEED],
+      "--actor_stages_accuracy"   => actor.stages[:ACCURACY],
+      "--actor_stages_evasion"    => actor.stages[:EVASION],
+      "--opponent_stages_attack"  => opponent.stages[:ATTACK],
+      "--opponent_stages_defense" => opponent.stages[:DEFENSE],
+      "--opponent_stages_spatk"   => opponent.stages[:SPECIAL_ATTACK],
+      "--opponent_stages_spdef"   => opponent.stages[:SPECIAL_DEFENSE],
+      "--opponent_stages_speed"   => opponent.stages[:SPEED],
+      "--opponent_stages_accuracy"=> opponent.stages[:ACCURACY],
+      "--opponent_stages_evasion" => opponent.stages[:EVASION]
+    }
+    
+    prompt = ""
+    data.each do |key, value|
+      prompt += " "+key+" "+value.to_s
     end
 
-    def self.testSocket
+    model = ML_AI_DICT[@mode][:UseMove]
+    result = `python "#{model}"#{prompt}`.chomp
+    return result.to_i
+  end
 
-        # Parse the URL to get the host and path
-        host = 'www.google.com'
-        port = 80
-
-        s = TCPSocket.open(host, port)
-        s.puts "GET / HTTP/1.1\r\n"
-        s.puts "\r\n"
-
-        while line = s.gets
-            puts line.chop
-        end
-
-        s.close
-
-        # Print the response to the console
-        echoln response
-    end
-
-    def self.testBingGPT
-      require 'socket'
-
-data =  '{
-            "Inputs": {
-              "data": [
-                {
-                  "Column2": "example_value",
-                  "turnCount": 0,
-                  "winner.move0.function": "example_value",
-                  "winner.move0.baseDamage": 0,
-                  "winner.move0.type": "example_value",
-                  "winner.move0.category": 0,
-                  "winner.move0.accuracy": 0,
-                  "winner.move0.priority": 0,
-                  "winner.move1.function": "example_value",
-                  "winner.move1.baseDamage": 0,
-                  "winner.move1.type": "example_value",
-                  "winner.move1.category": 0,
-                  "winner.move1.accuracy": 0,
-                  "winner.move1.priority": 0,
-                  "winner.move2.function": "example_value",
-                  "winner.move2.baseDamage": 0,
-                  "winner.move2.type": "example_value",
-                  "winner.move2.category": 0,
-                  "winner.move2.accuracy": 0,
-                  "winner.move2.priority": 0,
-                  "winner.move3.function": "example_value",
-                  "winner.move3.baseDamage": 0,
-                  "winner.move3.type": "example_value",
-                  "winner.move3.category": 0,
-                  "winner.move3.accuracy": 0,
-                  "winner.move3.priority": 0,
-                  "winner.attack": 0,
-                  "winner.spatk": 0,
-                  "winner.spdef": 0,
-                  "winner.totalhp": 0,
-                  "winner.hp": 0,
-                  "winner.stages.attack": 0,
-                  "winner.stages.defense": 0,
-                  "winner.stages.spatk": 0,
-                  "winner.stages.spdef": 0,
-                  "winner.stages.speed": 0,
-                  "winner.stages.accuracy": 0,
-                  "winner.stages.evasion": 0,
-                  "looser.stages.attack": 0,
-                  "looser.stages.defense": 0,
-                  "looser.stages.spatk": 0,
-                  "looser.stages.spdef": 0,
-                  "looser.stages.speed": 0,
-                  "looser.stages.accuracy": 0,
-                  "looser.stages.evasion": 0
-                }
-              ]
-            },
-            "GlobalParameters": {
-              "method": "predict"
-            }
-          }'
-
-# Send the HTTP request
-socket = TCPSocket.open('maram-ml-kpwft.northeurope.inference.ml.azure.com', 443)
-request = "POST maram-ml-kpwft.northeurope.inference.ml.azure.com HTTP/1.1\r\n"
-request += "Host: maram-ml-kpwft.northeurope.inference.ml.azure.com\r\n"
-request += "Content-Type: application/json\r\n"
-#request += "Content-Type: application/x-www-form-urlencoded\r\n"
-request += "Authorization: Bearer i0d8pBfcE0hXEMVDQLJXRaNg81iS1hxy\r\n"
-request += "azureml-model-deployment: automl0d3484f3424-1"
-#request += "Content-Length: #{data.bytesize}\r\n"
-request += "\r\n"
-request += data
-socket.print(request)
-
-# Get the response
-response = ""
-while line = socket.gets
-  response += line
 end
-
-# Close the socket
-socket.close
-
-puts response
-
-
-# Parse the response
-headers, body = response.split("\r\n\r\n")
-response_data = JSON.parse(body)
-
-# Print the response
-puts response_data
-    end
-end
-

@@ -68,6 +68,15 @@ class Battle
   end
 
   def pbRegisterMove(idxBattler, idxMove, showMessages = true)
+    # echoln idxBattler.to_s+" registers "+idxMove.to_s 
+    # TODO: i know this should go elsewhere eventually
+    if idxBattler==1 && Settings::USE_AI
+      echoln "Enemy would have tried to use ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name+" from moveset: "+@battlers[idxBattler].moves.to_s
+      ml_ai = ML_AI.new
+      idxMove = ml_ai.inferMove(ML_Logger.newState(self, 'preRegMove'), idxBattler, self)
+      echoln "Instead using ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name
+    end
+
     battler = @battlers[idxBattler]
     move = battler.moves[idxMove]
     return false if !pbCanChooseMove?(idxBattler, idxMove, showMessages)

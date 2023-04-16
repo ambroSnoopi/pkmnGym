@@ -7,8 +7,15 @@
 # The command should be executed from a cmd line tool at the location of this file.
 ################################################################################################
 
-#nvm this! currently all required libs should be included in python 3.10_3
-#just download and install the newest version of python
+numpy
+pandas
+joblib
+azureml
+azureml.automl.core
+azureml.automl.runtime
+inference_schema
+#sklearn
+scikit-learn
 
 
 #Examples:

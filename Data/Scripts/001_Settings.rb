@@ -436,7 +436,7 @@ module Settings
   # TODO: tbc
 
   USE_ML = true    #whether your battles shall be logged for Machine Learning
-  USE_AI = false   #whether trained AI models shall be used for battle decisions
+  USE_AI = true    #whether trained AI models shall be used for battle decisions
   ONLINE_AI = true #if false, you need to install PYTHON and the Requirements.txt
 
   # To improve AI behaviour, consider contributing your logs to:

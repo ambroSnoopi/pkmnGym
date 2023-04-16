@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
-- Python Interface for Online AI Models (W.I.P)
+- Python Interface for Local and Online AI Models (W.I.P)
+- AI (with battler_idx=1) now use a ML Model for choosing a move
 - Status & -count to Battler Log
 ### Removed
 ### Changed
 ### Fixed
+- situationID of turn ends
 
 ## [0.1.2]
 ### Added 

@@ -9,10 +9,8 @@ Data/*
 !Data/Scripts/
 
 # Ignore Machine Learning Logs
-# and Local Models for now (until they are any good)
 # and Secrets for online ML Model Endpoints (except the dummy/example)
 ML/logs/*
-ML/models/AutoML*
 ML/models/*/sec.cfg
 !ML/models/dummy/sec.cfg
 

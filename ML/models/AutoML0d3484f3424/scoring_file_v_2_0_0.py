@@ -1,18 +1,25 @@
-import urllib.request
+# ---------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# ---------------------------------------------------------
 import json
-from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-from configparser import ConfigParser
-
-"""
+import logging
 import os
-import ssl
-def allowSelfSignedHttps(allowed):
-    # bypass the server certificate verification on client side
-    if allowed and not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None):
-        ssl._create_default_https_context = ssl._create_unverified_context
+import pickle
+#import sklearn
+import numpy as np
+import pandas as pd
+import joblib
 
-allowSelfSignedHttps(True) # this line is needed if you use self-signed certificate in your scoring service.
-"""
+import azureml.automl.core
+from azureml.automl.core.shared import logging_utilities, log_server
+from azureml.telemetry import INSTRUMENTATION_KEY
+
+from inference_schema.schema_decorators import input_schema, output_schema
+from inference_schema.parameter_types.numpy_parameter_type import NumpyParameterType
+from inference_schema.parameter_types.pandas_parameter_type import PandasParameterType
+from inference_schema.parameter_types.standard_py_parameter_type import StandardPythonParameterType
+
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 parser.add_argument("-tc", "--turnCount", type=int)
@@ -61,11 +68,7 @@ parser.add_argument("-osa", "--opponent_stages_accuracy", type=int)
 parser.add_argument("-ose", "--opponent_stages_evasion", type=int)
 args = vars(parser.parse_args())
 
-# Request data goes here # https://docs.microsoft.com/azure/machine-learning/how-to-deploy-advanced-entry-script
-data =  {
-  "Inputs": {
-    "data": [
-      {
+data = {
         "Column2": "example_value",
         "turnCount": args["turnCount"],
         "winner.move0.function": args["actor_move0_function"],
@@ -112,39 +115,55 @@ data =  {
         "looser.stages.accuracy": args["opponent_stages_accuracy"],
         "looser.stages.evasion": args["opponent_stages_evasion"]
       }
-    ]
-  },
-  "GlobalParameters": {
-    "method": "predict"
-  }
-}
+input = {'data': data}
 
-body = str.encode(json.dumps(data))
+data_sample = PandasParameterType(pd.DataFrame({"Column2": pd.Series(["example_value"], dtype="object"), "turnCount": pd.Series([0], dtype="int8"), "winner.move0.function": pd.Series(["example_value"], dtype="object"), "winner.move0.baseDamage": pd.Series([0], dtype="int16"), "winner.move0.type": pd.Series(["example_value"], dtype="object"), "winner.move0.category": pd.Series([0], dtype="int8"), "winner.move0.accuracy": pd.Series([0], dtype="int8"), "winner.move0.priority": pd.Series([0], dtype="int8"), "winner.move1.function": pd.Series(["example_value"], dtype="object"), "winner.move1.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move1.type": pd.Series(["example_value"], dtype="object"), "winner.move1.category": pd.Series([0.0], dtype="float32"), "winner.move1.accuracy": pd.Series([0.0], dtype="float32"), "winner.move1.priority": pd.Series([0.0], dtype="float32"), "winner.move2.function": pd.Series(["example_value"], dtype="object"), "winner.move2.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move2.type": pd.Series(["example_value"], dtype="object"), "winner.move2.category": pd.Series([0.0], dtype="float32"), "winner.move2.accuracy": pd.Series([0.0], dtype="float32"), "winner.move2.priority": pd.Series([0.0], dtype="float32"), "winner.move3.function": pd.Series(["example_value"], dtype="object"), "winner.move3.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move3.type": pd.Series(["example_value"], dtype="object"), "winner.move3.category": pd.Series([0.0], dtype="float32"), "winner.move3.accuracy": pd.Series([0.0], dtype="float32"), "winner.move3.priority": pd.Series([0.0], dtype="float32"), "winner.attack": pd.Series([0], dtype="int16"), "winner.spatk": pd.Series([0], dtype="int16"), "winner.spdef": pd.Series([0], dtype="int16"), "winner.totalhp": pd.Series([0], dtype="int16"), "winner.hp": pd.Series([0], dtype="int16"), "winner.stages.attack": pd.Series([0], dtype="int8"), "winner.stages.defense": pd.Series([0], dtype="int8"), "winner.stages.spatk": pd.Series([0], dtype="int8"), "winner.stages.spdef": pd.Series([0], dtype="int8"), "winner.stages.speed": pd.Series([0], dtype="int8"), "winner.stages.accuracy": pd.Series([0], dtype="int8"), "winner.stages.evasion": pd.Series([0], dtype="int8"), "looser.stages.attack": pd.Series([0], dtype="int8"), "looser.stages.defense": pd.Series([0], dtype="int8"), "looser.stages.spatk": pd.Series([0], dtype="int8"), "looser.stages.spdef": pd.Series([0], dtype="int8"), "looser.stages.speed": pd.Series([0], dtype="int8"), "looser.stages.accuracy": pd.Series([0], dtype="int8"), "looser.stages.evasion": pd.Series([0], dtype="int8")}))
+input_sample = StandardPythonParameterType({'data': data_sample})
+method_sample = StandardPythonParameterType("predict")
+sample_global_params = StandardPythonParameterType({"method": method_sample})
 
-secrets = ConfigParser()
-secrets_file = "ML\models\maram-ml-kpwft\sec.cfg" #".\sec.cfg"
-secrets.read(secrets_file)
-
-url = secrets.get('private', 'url')
-api_key = secrets.get('private', 'api_key')
-model_deployment = secrets.get('private', 'azureml-model-deployment') # The azureml-model-deployment header will force the request to go to a specific deployment.
-
-if not api_key:
-    raise Exception("A key should be provided to invoke the endpoint")
-
-# Remove this header to have the request observe the endpoint traffic rules
-headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key), 'azureml-model-deployment': model_deployment}
-
-req = urllib.request.Request(url, body, headers)
+result_sample = NumpyParameterType(np.array([0]))
+output_sample = StandardPythonParameterType({'Results':result_sample})
 
 try:
-    response = urllib.request.urlopen(req)   
-    result = json.loads(response.read()).get("Results")[0]
-    print(result)
+    log_server.enable_telemetry(INSTRUMENTATION_KEY)
+    log_server.set_verbosity('INFO')
+    logger = logging.getLogger('azureml.automl.core.scoring_script_v2')
+except:
+    pass
 
-except urllib.error.HTTPError as error:
-    print("The request failed with status code: " + str(error.code))
 
-    # Print the headers - they include the request ID and the timestamp, which are useful for debugging the failure
-    print(error.info())
-    print(error.read().decode("utf8", 'ignore'))
+def init():
+    global model
+    # This name is model.id of model that we want to deploy deserialize the model file back into a sklearn model
+    model_path = os.path.join(os.path.abspath( os.path.dirname( __file__ ) ), 'model.pkl')
+    path = os.path.normpath(model_path)
+    path_split = path.split(os.sep)
+    log_server.update_custom_dimensions({'model_name': path_split[-3], 'model_version': path_split[-2]})
+    try:
+        logger.info("Loading model from path.")
+        model = joblib.load(model_path)
+        logger.info("Loading successful.")
+    except Exception as e:
+        logging_utilities.log_traceback(e, logger)
+        raise
+
+
+@input_schema('GlobalParameters', sample_global_params, convert_to_provided_type=False)
+@input_schema('Inputs', input_sample)
+@output_schema(output_sample)
+def run(Inputs, GlobalParameters={"method": "predict"}):
+    data = Inputs['data']
+    if GlobalParameters.get("method", None) == "predict_proba":
+        result = model.predict_proba(data)
+    elif GlobalParameters.get("method", None) == "predict":
+        result = model.predict(data)
+    else:
+        raise Exception(f"Invalid predict method argument received. GlobalParameters: {GlobalParameters}")
+    if isinstance(result, pd.DataFrame):
+        result = result.values
+    return {'Results':result.tolist()}
+
+init()
+print(run(input))
+#print(run(input_sample))
