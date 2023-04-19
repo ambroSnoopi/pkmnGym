@@ -1,19 +1,18 @@
-require 'socket'
+#require 'socket'
 
 # Interface to a trained ML Model
 #TODO: This is W.I.P.!
 class ML_AI
-
-  ML_AI_DICT      = { #TODO: make it rep or trainer type based? move this config to a  PBS-style file?
-      :online => {
-          'action' => '',
-          :UseMove => 'ML/models/maram-ml-kpwft/score.py',
-          'switch' => ''},
-      :local  => {
-          'action' => '',
-          :UseMove => 'ML/models/AutoML0d3484f3424/scoring_file_v_2_0_0.py',
-          'switch' => ''}
-      }
+  ML_AI_DICT = { #TODO: make it rep or trainer.skill_level based? move this config to a  PBS-style file?
+    :online => {
+      "action" => '',
+      :UseMove => 'ML/models/maram-ml-kpwft/score.py',
+      "switch" => '' },
+    :local  => {
+      "action" => '',
+      :UseMove => 'ML/models/AutoML0d3484f3424/scoring_file_v_2_0_0.py',
+      "switch" => '' }
+  }
 
   def initialize(online=Settings::ONLINE_AI)
     @mode = online ? :online : :local
@@ -23,7 +22,6 @@ class ML_AI
   #TODO: should be called in def pbChooseMoves(idxBattler) of Battle::AI / especially considering AI skill levels
   #but I'm lazy for now, so let's just catch it in def pbRegisterMove of Battle (004_Battle_ActionAttacksPriority.rb)
   def inferMove(turnlog, idxBattler, battle)
-
     #turnlog.hmap is of form {string => string/int} because prep_json replaces it inplace
     #TODO: either store each attribute again outside of the hmap, or def restore, or alter how to_json works (make copy instead of inplace update)
     #meanwhile using original values from battle
@@ -94,7 +92,7 @@ class ML_AI
     }
     '''
 
-    if idxBattler==0
+    if idxBattler == 0
       actor    = battle.battlers[0]
       opponent = battle.battlers[1]
     else
@@ -148,7 +146,7 @@ class ML_AI
       "--opponent_stages_accuracy"=> opponent.stages[:ACCURACY],
       "--opponent_stages_evasion" => opponent.stages[:EVASION]
     }
-    
+
     prompt = ""
     data.each do |key, value|
       prompt += " "+key+" "+value.to_s
@@ -158,5 +156,4 @@ class ML_AI
     result = `python "#{model}"#{prompt}`.chomp
     return result.to_i
   end
-
 end

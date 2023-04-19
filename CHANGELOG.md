@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
-- Python Interface for Local and Online AI Models (W.I.P)
+- Python Interface for Local and Online AI Models (v0.2)
 - AI (with battler_idx=1) now use a ML Model for choosing a move
-- Status & -count to Battler Log
+- Logging all Attributes that are also used by the Classic PBS AI (incl. Effects)
+- Logger now keeps track about already seen Battlers
 ### Removed
 ### Changed
 ### Fixed

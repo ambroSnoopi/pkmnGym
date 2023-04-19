@@ -71,7 +71,10 @@ class Battle
     # echoln idxBattler.to_s+" registers "+idxMove.to_s 
     # TODO: i know this should go elsewhere eventually
     if idxBattler==1 && Settings::USE_AI
-      echoln "Enemy would have tried to use ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name+" from moveset: "+@battlers[idxBattler].moves.to_s
+      
+      echoln "Enemy would have tried to use ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name+" from moveset: "
+      @battlers[idxBattler].moves.each{|m| echoln m.name.to_s}
+
       ml_ai = ML_AI.new
       idxMove = ml_ai.inferMove(ML_Logger.newState(self, 'preRegMove'), idxBattler, self)
       echoln "Instead using ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name

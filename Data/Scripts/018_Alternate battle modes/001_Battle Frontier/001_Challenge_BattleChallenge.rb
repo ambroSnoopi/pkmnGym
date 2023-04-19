@@ -111,13 +111,13 @@ class BattleChallenge
   def gcBattle
     challengedata = self.rules
 
-    echoln "creating battle trainer..."
+    #echoln "creating battle trainer..."
     opponent = gcGenerateBattleTrainer(self.nextTrainer, self.rules)
     bttrainers = pbGetBTTrainers(@id)
     trainerdata = bttrainers[self.nextTrainer]
     opponent.lose_text = pbGetMessageFromHash(MessageTypes::EndSpeechLose, trainerdata[4])
     opponent.win_text = pbGetMessageFromHash(MessageTypes::EndSpeechWin, trainerdata[3])
-    echoln "battle trainer created"
+    #echoln "battle trainer created"
 
     # Skip battle if holding Ctrl in Debug mode
     if Input.press?(Input::CTRL) && $DEBUG

@@ -182,8 +182,7 @@ def gcGenerateBattleTrainer(idxTrainer, rules)
     prng = Random.new
     # Create the trainer
     trainerdata = bttrainers[idxTrainer]
-    echoln "Creating NPC Trainer with id " + idxTrainer.to_s + " ..."
-   # echoln "...from " + bttrainers.to_s
+    #echoln "Creating NPC Trainer with id " + idxTrainer.to_s + " ..."
     opponent = NPCTrainer.new(
       pbGetMessageFromHash(MessageTypes::TrainerNames, trainerdata[1]),
       trainerdata[0]
@@ -212,9 +211,9 @@ def gcGenerateBattleTrainer(idxTrainer, rules)
     end
     # There are more possible Pokémon than there are spaces available in the
     # trainer's party; randomly choose Pokémon
-    echoln "Choosing " + rules.ruleset.suggestedNumber.to_s + " Pokemon..." 
+    #echoln "Choosing " + rules.ruleset.suggestedNumber.to_s + " Pokemon..." 
     loop do
-      echoln "Reseting Party..."
+      #echoln "Reseting Party..."
       opponent.party.clear
       while opponent.party.length < rules.ruleset.suggestedNumber
         rnd = pokemonnumbers[rand(pokemonnumbers.length)]
@@ -225,6 +224,6 @@ def gcGenerateBattleTrainer(idxTrainer, rules)
       end
       break if rules.ruleset.isValid?(opponent.party)
     end
-    echoln "Finished creating Opponent."
+    #echoln "Finished creating Opponent."
     return opponent
-  end
+end

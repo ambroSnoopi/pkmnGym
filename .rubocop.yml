@@ -59,6 +59,13 @@ Naming/ClassAndModuleCamelCase:
 Naming/FileName:
   Enabled: false
 
+# cant be bothered to switch everything to snake_case
+Naming/VariableName:
+  Enabled: false
+
+Naming/MethodName:
+  Enabled: false
+
 #===============================================================================
 # Security
 #===============================================================================
