@@ -184,11 +184,6 @@ class TurnLog < ML_Log
       @choices.append(choice)
     end
 
-    @party0 = []
-    battle.player[0].party.each { |p| @party0.push(PokemonLog.new(p)) }
-    @party1 = []
-    battle.opponent[0].party.each { |p| @party1.push(PokemonLog.new(p)) }
-
     @dir   = dir
     @fname = "b-#{battleID}-t-#{turnID}-#{sid}-#{sLabel}"
     @hmap = {
@@ -197,26 +192,23 @@ class TurnLog < ML_Log
       :sid              => sid,
       :sLabel           => sLabel,
       :turnCount        => battle.turnCount,
-      :positionEffects  => position_effects,
-      "side0.effects"   => side0_effects,
-      "side1.effects"   => side1_effects,
-      :fieldEffects     => field_effects,
+      "effects.position"=> position_effects,
+      "effects.side.player"  => side0_effects,
+      "effects.side.opponent"=> side1_effects,
+      "effects.field"   => field_effects,
       :weather          => battle.field.weather, #Symbol, e.g. :Sun
       :weatherDuration  => battle.field.weatherDuration, #Symbol, e.g. :Sun
       :terrain          => battle.field.terrain, #Symbol, e.g. :Electric
       :terrainDuration  => battle.field.terrainDuration, #Symbol, e.g. :Electric
-      :battler0         => BattlerLog.new(battleID, turnID, battle, battle.battlers[0]), #Player Pokemon
-      :battler1         => BattlerLog.new(battleID, turnID, battle, battle.battlers[1]), #Opponents Pokemon
+      :battlers         => battle.battlers.collect { |b| BattlerLog.new(battleID, turnID, battle, b) },
       :items            => battle.items,
       :ally_items       => battle.ally_items,
       :choices          => @choices,
       :usedInBattle     => battle.usedInBattle, #TODO: appearently always empty?
       :lastMoveUsed     => battle.lastMoveUsed,
       :lastMoveUser     => battle.lastMoveUser,
-      :party0           => @party0, #Player Party
-#      "party0.seen"     => ML_Logger.seenBattler(0),
-      :party1           => @party1  #Opponent Party
-#      "party1.seen"     => ML_Logger.seenBattler(1)
+        "player.party"  => battle.player.collect   { |t| t.party.collect { |p| PokemonLog.new(p) } }, #Array<Array<Pokemon>> whereby 1. Array idx = BattleLog.player[idx]
+      "opponent.party"  => battle.opponent.collect { |t| t.party.collect { |p| PokemonLog.new(p) } }
     }
 
     #get scores of traditional pbAI for each move of each battler against each target

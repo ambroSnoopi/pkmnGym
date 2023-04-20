@@ -130,7 +130,7 @@ class Battle
   # For choosing a replacement Pokémon when prompted in the middle of other
   # things happening (U-turn, Baton Pass, in def pbEORSwitch).
   def pbSwitchInBetween(idxBattler, checkLaxOnly = false, canCancel = false)
-    echoln "Logging preSwitch in pbSwitchInBetween"
+    #echoln "Logging preSwitch in pbSwitchInBetween"
     ML_Logger.newState(self, "preSwitch")
     return pbPartyScreen(idxBattler, checkLaxOnly, canCancel) if pbOwnedByPlayer?(idxBattler)
     return @battleAI.pbDefaultChooseNewEnemy(idxBattler, pbParty(idxBattler))

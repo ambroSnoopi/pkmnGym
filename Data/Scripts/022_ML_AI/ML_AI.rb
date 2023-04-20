@@ -13,7 +13,7 @@ class ML_AI
       "action" => '',
       :UseMove => 'ML/models/AutoML0d3484f3424/scoring_file_v_2_0_0.py',
       "switch" => '' }
-  }
+  } #TODO: specify ML_VERSION of each model, add mlVersion as parameter for infer() function, case branch inside infer() to e.g. inferV0_2() for backwards compability
 
   def initialize(online=Settings::ONLINE_AI)
     @mode = online ? :online : :local
