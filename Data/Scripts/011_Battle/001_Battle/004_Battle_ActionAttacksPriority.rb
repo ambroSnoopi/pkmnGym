@@ -71,7 +71,7 @@ class Battle
     # echoln idxBattler.to_s+" registers "+idxMove.to_s 
     # TODO: i know this should go elsewhere eventually
     if idxBattler==1 && Settings::USE_AI
-      
+      # TODO: maybe add this info to the log... though I don't think i'd be able to use that for evaluating the decision (bc incapable to comprehend the full situation from logs)
       echoln "Enemy would have tried to use ("+idxMove.to_s+") "+@battlers[idxBattler].moves[idxMove].name+" from moveset: "
       @battlers[idxBattler].moves.each{|m| echoln m.name.to_s}
 

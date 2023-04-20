@@ -15,15 +15,17 @@ class Battle::AI
     battler = @battle.battlers[idxBattler]
     # If Pokémon is within 6 levels of the foe, and foe's last move was
     # super-effective and powerful
-    if !shouldSwitch && battler.turnCount > 0 && skill >= PBTrainerAI.highSkill
+    # TODO: undo my #TWEEKING to encourage switches for the ML to potentially learn from
+    if !shouldSwitch && battler.turnCount > 0 && skill #>= PBTrainerAI.highSkill #TWEEKING
       target = battler.pbDirectOpposing(true)
       if !target.fainted? && target.lastMoveUsed &&
          (target.level - battler.level).abs <= 6
         moveData = GameData::Move.get(target.lastMoveUsed)
         moveType = moveData.type
         typeMod = pbCalcTypeMod(moveType, target, battler)
-        if Effectiveness.super_effective?(typeMod) && moveData.base_damage > 50
-          switchChance = (moveData.base_damage > 70) ? 30 : 20
+        if Effectiveness.super_effective?(typeMod) && moveData.base_damage > 30 #50 #TWEEKING
+          #switchChance = (moveData.base_damage > 70) ? 30 : 20 #TWEEKING
+          switchChance = (moveData.base_damage > 60) ? 70 : 50
           shouldSwitch = (pbAIRandom(100) < switchChance)
         end
       end
