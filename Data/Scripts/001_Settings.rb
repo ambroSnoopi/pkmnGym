@@ -432,8 +432,8 @@ module Settings
 
   #=============================================================================
   # For more informatin see: https://github.com/ambroSnoopi/pkmnGym#readme
-  # To use AI features you need to install PYTHON and the following Requirements:
-  # TODO: tbc
+  # To use AI features you need to install PYTHON and the Requirements as per:
+  # Requirements.txt
 
   USE_ML = true    #whether your battles shall be logged for Machine Learning
   USE_AI = true    #whether trained AI models shall be used for battle decisions
