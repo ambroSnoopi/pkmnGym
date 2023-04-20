@@ -708,8 +708,7 @@ class Battle
     # Try to make Trace work, check for end of primordial weather
     priority.each { |battler| battler.pbContinualAbilityChecks }
 
-    ML_Logger.endTurn(self) #TODO test whether it should be called before resetting Effects
-    echoln "Logging turn at pbEndOfRoundPhase"
+    ML_Logger.newState(self, 'preEffectsUpdate')
     
     # Reset/count down battler-specific effects (no messages)
     allBattlers.each do |battler|
@@ -777,6 +776,8 @@ class Battle
     @field.effects[PBEffects::FairyLock]   -= 1 if @field.effects[PBEffects::FairyLock] > 0
     @field.effects[PBEffects::FusionBolt]  = false
     @field.effects[PBEffects::FusionFlare] = false
+
+    ML_Logger.endTurn(self)
     @endOfRound = false
   end
 end

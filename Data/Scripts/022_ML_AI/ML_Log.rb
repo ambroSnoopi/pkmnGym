@@ -80,17 +80,16 @@ class BattleLog < ML_Log
   #  5 - Draw
 
   def initialize(id, battle, dir = @dir, sid = 0, sLabel = "default")
-    @id     = id
-    @sid    = sid
-    @sLabel   = sLabel
-    @player   = TrainerLog.new(battle.player[0])
-    @opponent   = TrainerLog.new(battle.opponent[0]) #no double-battles support
+    @id         = id
+    @sid        = sid
+    @sLabel     = sLabel
+    @battle     = battle
+    @player     = battle.player.collect  {|t| TrainerLog.new(t)}
+    @opponent   = battle.opponent.collect{|t| TrainerLog.new(t)}
     @decision   = 0
-    @rep    = $gcGymLeader.rep
 
-    @gameVersion = Settings::GAME_VERSION
+    @dir        = dir
 
-    @dir   = dir
   end
 
   def fname
@@ -99,15 +98,19 @@ class BattleLog < ML_Log
   
   def hmap #dynamic to get updates on @decision
     return {
-      :id    => @id, 
-      :sid     => @sid,
-      :sLabel  => @sLabel,
-      :player  => @player, 
-      :opponent  => @opponent,
-      :decision  => @decision,
-      :gameVersion => @gameVersion,
-      :rep    => @rep,
-      :mlVersion => ML_VERSION
+      :id           => @id, 
+      :sid          => @sid,
+      :sLabel       => @sLabel,
+      :player       => @player, 
+      :opponent     => @opponent,
+      :decision     => @decision,
+      :pbsVersion   => Essentials::VERSION,
+      :gameVersion  => Settings::GAME_VERSION,
+      :gameGen      => Settings::MECHANICS_GENERATION,
+      :sideSizes    => @battle.sideSizes,
+      :rep          => $gcGymLeader.rep,
+      :mlVersion    => ML_VERSION,
+      :mlModel      => 'AutoML0d3484f3424' #TODO: per side/battler?
     }
   end
 end
