@@ -431,13 +431,12 @@ module Settings
   ]
 
   #=============================================================================
-  # For more informatin see: https://github.com/ambroSnoopi/pkmnGym#readme
-  # To use AI features you need to install PYTHON and the Requirements as per:
-  # Requirements.txt
+  # For more information see: https://github.com/ambroSnoopi/pkmnGym#readme
+  # To use AI features you need to install PYTHON 3.10 or setup a Conda Environment
 
-  USE_ML = true    #whether your battles shall be logged for Machine Learning
-  USE_AI = true    #whether trained AI models shall be used for battle decisions
-  ONLINE_AI = false #if false, you need to install PYTHON and the Requirements.txt
+  USE_ML = true     # whether your battles shall be logged for Machine Learning
+  USE_AI = true     # whether trained AI models shall be used for battle decisions
+  ONLINE_AI = false # if true, you need to install PYTHON 3.10 // if false (but USE_AI is true), you need to setup a Conda Env (see ML_AI.rb)
 
   # To improve AI behaviour, consider contributing your logs to:
   #    https://github.com/ambroSnoopi/pkmnGym/tree/master/ML/logs

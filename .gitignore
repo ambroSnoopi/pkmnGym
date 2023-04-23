@@ -8,11 +8,13 @@ Data/*
 !Data/Scripts.rxdata
 !Data/Scripts/
 
-# Ignore Machine Learning Logs
+# Ignore Machine Learning Logs and Scoring Logs (i.e. Model executions)
 # and Secrets for online ML Model Endpoints (except the dummy/example)
 ML/logs/*
+ML/models/*/scoring.log
 ML/models/*/sec.cfg
 !ML/models/dummy/sec.cfg
+ML/workspace
 
 # Files in the main project folder
 Game.ini

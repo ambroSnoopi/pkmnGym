@@ -4,7 +4,7 @@
 # Details about the Conda environment file format:
 # https://conda.io/docs/user-guide/tasks/manage-environments.html#create-env-file-manually
 
-name: project_environment
+name: localAutoMLv1
 dependencies:
   # The python interpreter version.
   # Currently Azure ML only supports 3.8 and later.
@@ -15,6 +15,7 @@ dependencies:
   - inference-schema
   - azureml-interpret==1.49.0
   - azureml-defaults==1.49.0
+  - PyQt5==5.15.9
 - numpy==1.21.6
 - pandas==1.1.5
 - scikit-learn==0.22.1

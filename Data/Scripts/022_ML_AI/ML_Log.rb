@@ -215,11 +215,9 @@ class TurnLog < ML_Log
     battle.battlers.each_with_index{ |battler, b_id| 
       battler.moves.each_with_index{ |m, m_id| 
         battle.battlers.each_with_index{ |target, t_id| 
-          score = battle.battleAI.pbGetMoveScore(m, battler, target, skill = 100)
-          @hmap["b#{b_id}.m#{m_id}.t#{t_id}.pbScore"] = score
-
-          @hmap["b#{b_id}.m#{m_id}.t#{t_id}.typeMod"] = m.pbCalcTypeMod(m.type, battler, target)
-          @hmap[:sharesTypes] = battler.types[0] && target.pbHasType?(battler.types[0]) && battler.types[1] && target.pbHasType?(battler.types[1])
+          next if target.fainted? || battler == target
+          
+          @hmap["b#{b_id}.t#{t_id}.shareTypes"] = battler.types[0] && target.pbHasType?(battler.types[0]) && battler.types[1] && target.pbHasType?(battler.types[1])
           #TODO: check direction:
           @hmap["b#{b_id}.canSleep.t#{t_id}"] = target.pbCanSleep?(battler, false)
           @hmap["b#{b_id}.canPoison.t#{t_id}"] = target.pbCanPoison?(battler, false)
@@ -227,6 +225,10 @@ class TurnLog < ML_Log
           @hmap["b#{b_id}.canBurn.t#{t_id}"] = target.pbCanBurn?(battler, false)
           @hmap["b#{b_id}.canFreeze.t#{t_id}"] = target.pbCanFreeze?(battler, false)
           @hmap["b#{b_id}.canConfuse.t#{t_id}"] = target.pbCanConfuse?(battler, false)
+
+          score = battle.battleAI.pbGetMoveScore(m, battler, target)
+          @hmap["b#{b_id}.m#{m_id}.t#{t_id}.pbScore"] = score
+          @hmap["b#{b_id}.m#{m_id}.t#{t_id}.typeMod"] = m.pbCalcTypeMod(m.type, battler, target)
         }
       }
     }

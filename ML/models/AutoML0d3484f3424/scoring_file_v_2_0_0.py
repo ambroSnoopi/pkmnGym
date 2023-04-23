@@ -13,6 +13,7 @@ import joblib
 import azureml.automl.core
 from azureml.automl.core.shared import logging_utilities, log_server
 from azureml.telemetry import INSTRUMENTATION_KEY
+#import azureml.automl.runtime
 
 from inference_schema.schema_decorators import input_schema, output_schema
 from inference_schema.parameter_types.numpy_parameter_type import NumpyParameterType
@@ -68,7 +69,16 @@ parser.add_argument("-osa", "--opponent_stages_accuracy", type=int)
 parser.add_argument("-ose", "--opponent_stages_evasion", type=int)
 args = vars(parser.parse_args())
 
-data = {
+logging.basicConfig(
+        level = logging.INFO,
+        filename = "ML\models\AutoML0d3484f3424\scoring.log",
+        #encoding="utf-8",
+        format = "%(asctime)-15s %(levelname)-8s %(message)s"
+    )
+logger = logging.getLogger('local')
+logger.info(f'##################### Starting Execution with args={args}')
+
+data = [{
         "Column2": "example_value",
         "turnCount": args["turnCount"],
         "winner.move0.function": args["actor_move0_function"],
@@ -114,7 +124,7 @@ data = {
         "looser.stages.speed": args["opponent_stages_speed"],
         "looser.stages.accuracy": args["opponent_stages_accuracy"],
         "looser.stages.evasion": args["opponent_stages_evasion"]
-      }
+      }]
 input = {'data': data}
 
 data_sample = PandasParameterType(pd.DataFrame({"Column2": pd.Series(["example_value"], dtype="object"), "turnCount": pd.Series([0], dtype="int8"), "winner.move0.function": pd.Series(["example_value"], dtype="object"), "winner.move0.baseDamage": pd.Series([0], dtype="int16"), "winner.move0.type": pd.Series(["example_value"], dtype="object"), "winner.move0.category": pd.Series([0], dtype="int8"), "winner.move0.accuracy": pd.Series([0], dtype="int8"), "winner.move0.priority": pd.Series([0], dtype="int8"), "winner.move1.function": pd.Series(["example_value"], dtype="object"), "winner.move1.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move1.type": pd.Series(["example_value"], dtype="object"), "winner.move1.category": pd.Series([0.0], dtype="float32"), "winner.move1.accuracy": pd.Series([0.0], dtype="float32"), "winner.move1.priority": pd.Series([0.0], dtype="float32"), "winner.move2.function": pd.Series(["example_value"], dtype="object"), "winner.move2.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move2.type": pd.Series(["example_value"], dtype="object"), "winner.move2.category": pd.Series([0.0], dtype="float32"), "winner.move2.accuracy": pd.Series([0.0], dtype="float32"), "winner.move2.priority": pd.Series([0.0], dtype="float32"), "winner.move3.function": pd.Series(["example_value"], dtype="object"), "winner.move3.baseDamage": pd.Series([0.0], dtype="float32"), "winner.move3.type": pd.Series(["example_value"], dtype="object"), "winner.move3.category": pd.Series([0.0], dtype="float32"), "winner.move3.accuracy": pd.Series([0.0], dtype="float32"), "winner.move3.priority": pd.Series([0.0], dtype="float32"), "winner.attack": pd.Series([0], dtype="int16"), "winner.spatk": pd.Series([0], dtype="int16"), "winner.spdef": pd.Series([0], dtype="int16"), "winner.totalhp": pd.Series([0], dtype="int16"), "winner.hp": pd.Series([0], dtype="int16"), "winner.stages.attack": pd.Series([0], dtype="int8"), "winner.stages.defense": pd.Series([0], dtype="int8"), "winner.stages.spatk": pd.Series([0], dtype="int8"), "winner.stages.spdef": pd.Series([0], dtype="int8"), "winner.stages.speed": pd.Series([0], dtype="int8"), "winner.stages.accuracy": pd.Series([0], dtype="int8"), "winner.stages.evasion": pd.Series([0], dtype="int8"), "looser.stages.attack": pd.Series([0], dtype="int8"), "looser.stages.defense": pd.Series([0], dtype="int8"), "looser.stages.spatk": pd.Series([0], dtype="int8"), "looser.stages.spdef": pd.Series([0], dtype="int8"), "looser.stages.speed": pd.Series([0], dtype="int8"), "looser.stages.accuracy": pd.Series([0], dtype="int8"), "looser.stages.evasion": pd.Series([0], dtype="int8")}))
@@ -125,13 +135,12 @@ sample_global_params = StandardPythonParameterType({"method": method_sample})
 result_sample = NumpyParameterType(np.array([0]))
 output_sample = StandardPythonParameterType({'Results':result_sample})
 
-try:
-    log_server.enable_telemetry(INSTRUMENTATION_KEY)
-    log_server.set_verbosity('INFO')
-    logger = logging.getLogger('azureml.automl.core.scoring_script_v2')
-except:
-    pass
-
+#try:
+#    log_server.enable_telemetry(INSTRUMENTATION_KEY)
+#    log_server.set_verbosity('INFO')
+#    logger = logging.getLogger('azureml.automl.core.scoring_script_v2')
+#except:
+#    pass
 
 def init():
     global model
@@ -165,5 +174,6 @@ def run(Inputs, GlobalParameters={"method": "predict"}):
     return {'Results':result.tolist()}
 
 init()
-print(run(input))
-#print(run(input_sample))
+r = run(input)
+print(r.get("Results")[0])
+logger.info(f'##################### Finished Execution with result={r}')

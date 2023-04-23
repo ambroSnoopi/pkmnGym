@@ -1,15 +1,17 @@
 #require 'socket'
 
 # Interface to a trained ML Model
-#TODO: This is W.I.P.!
+#TODO: This is still very much W.I.P.!
 class ML_AI
 
-  ML_AI_DICT = { #TODO: make it rep or trainer.skill_level based? move this config to a  PBS-style file?
+  ML_AI_DICT = { #TODO: make it rep or trainer.skill_level based? move this config to a PBS-style file?
     :online => {
+      :path => "python",
       "action" => '',
       :UseMove => 'ML/models/maram-ml-kpwft/score.py',
       "switch" => '' },
     :local  => {
+      :path => 'C:\Users\Shadow\miniconda3\envs\localAutoMLv1\python.exe',
       "action" => '',
       :UseMove => 'ML/models/AutoML0d3484f3424/scoring_file_v_2_0_0.py',
       "switch" => '' }
@@ -17,6 +19,7 @@ class ML_AI
 
   def initialize(online=Settings::ONLINE_AI)
     @mode = online ? :online : :local
+    #TODO: find a way to init local model at the beginning of the battle (maybe async) and reuse each turn to improve performance
   end
 
 
@@ -109,24 +112,24 @@ class ML_AI
       "--actor_move0_category"    => actor.moves[0].realMove.category,
       "--actor_move0_accuracy"    => actor.moves[0].realMove.accuracy,
       "--actor_move0_priority"    => actor.moves[0].realMove.priority,
-      "--actor_move1_function"    => actor.moves[1]&.realMove.function_code, # Using Safe Navigation Operator in case battler only has 1 move
-      "--actor_move1_baseDamage"  => actor.moves[1]&.realMove.base_damage,
-      "--actor_move1_type"        => actor.moves[1]&.realMove.type,
-      "--actor_move1_category"    => actor.moves[1]&.realMove.category,
-      "--actor_move1_accuracy"    => actor.moves[1]&.realMove.accuracy,
-      "--actor_move1_priority"    => actor.moves[1]&.realMove.priority,
-      "--actor_move2_function"    => actor.moves[2]&.realMove.function_code,
-      "--actor_move2_baseDamage"  => actor.moves[2]&.realMove.base_damage,
-      "--actor_move2_type"        => actor.moves[2]&.realMove.type,
-      "--actor_move2_category"    => actor.moves[2]&.realMove.category,
-      "--actor_move2_accuracy"    => actor.moves[2]&.realMove.accuracy,
-      "--actor_move2_priority"    => actor.moves[2]&.realMove.priority,
-      "--actor_move3_function"    => actor.moves[3]&.realMove.function_code,
-      "--actor_move3_baseDamage"  => actor.moves[3]&.realMove.base_damage,
-      "--actor_move3_type"        => actor.moves[3]&.realMove.type,
-      "--actor_move3_category"    => actor.moves[3]&.realMove.category,
-      "--actor_move3_accuracy"    => actor.moves[3]&.realMove.accuracy,
-      "--actor_move3_priority"    => actor.moves[3]&.realMove.priority,
+      "--actor_move1_function"    => actor.moves[1]&.realMove&.function_code, # Using Safe Navigation Operator in case battler only has 1 move
+      "--actor_move1_baseDamage"  => actor.moves[1]&.realMove&.base_damage,
+      "--actor_move1_type"        => actor.moves[1]&.realMove&.type,
+      "--actor_move1_category"    => actor.moves[1]&.realMove&.category,
+      "--actor_move1_accuracy"    => actor.moves[1]&.realMove&.accuracy,
+      "--actor_move1_priority"    => actor.moves[1]&.realMove&.priority,
+      "--actor_move2_function"    => actor.moves[2]&.realMove&.function_code,
+      "--actor_move2_baseDamage"  => actor.moves[2]&.realMove&.base_damage,
+      "--actor_move2_type"        => actor.moves[2]&.realMove&.type,
+      "--actor_move2_category"    => actor.moves[2]&.realMove&.category,
+      "--actor_move2_accuracy"    => actor.moves[2]&.realMove&.accuracy,
+      "--actor_move2_priority"    => actor.moves[2]&.realMove&.priority,
+      "--actor_move3_function"    => actor.moves[3]&.realMove&.function_code,
+      "--actor_move3_baseDamage"  => actor.moves[3]&.realMove&.base_damage,
+      "--actor_move3_type"        => actor.moves[3]&.realMove&.type,
+      "--actor_move3_category"    => actor.moves[3]&.realMove&.category,
+      "--actor_move3_accuracy"    => actor.moves[3]&.realMove&.accuracy,
+      "--actor_move3_priority"    => actor.moves[3]&.realMove&.priority,
       "--actor_attack"            => actor.plainStats[:ATTACK],
       "--actor_spatk"             => actor.plainStats[:SPECIAL_ATTACK],
       "--actor_spdef"             => actor.plainStats[:SPECIAL_DEFENSE],
@@ -150,11 +153,17 @@ class ML_AI
 
     prompt = ""
     data.each do |key, value|
+      next if value.nil? # nil values will cause the prompt to break (chaing keys)
       prompt += " "+key+" "+value.to_s
     end
 
     model = ML_AI_DICT[@mode][:UseMove]
-    result = `python "#{model}"#{prompt}`.chomp
+    path = ML_AI_DICT[@mode][:path]
+    result = `#{path} "#{model}"#{prompt}`.chomp
+    #echoln "path: "+path
+    #echoln "model: "+model
+    #echoln "prompt: "+prompt
+    #echoln "result: "+result.to_s
     return result.to_i
   end
 end
