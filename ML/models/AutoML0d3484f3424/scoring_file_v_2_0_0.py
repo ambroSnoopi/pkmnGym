@@ -1,6 +1,10 @@
 # ---------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # ---------------------------------------------------------
+
+# Usage:
+# C:\Users\Shadow\miniconda3\envs\localAutoMLv1\python.exe "ML\models\AutoML0d3484f3424\scoring_file_v_2_0_0.py" --turnCount 0 --actor_move0_function RaiseUserDefense1CurlUpUser --actor_move0_baseDamage 0 --actor_move0_type NORMAL --actor_move0_category 2 --actor_move0_accuracy 0 --actor_move0_priority 0 --actor_move1_function TwoTurnAttackInvulnerableUnderground --actor_move1_baseDamage 80 --actor_move1_type GROUND --actor_move1_category 0 --actor_move1_accuracy 100 --actor_move1_priority 0 --actor_attack 18 --actor_spatk 15 --actor_spdef 19 --actor_totalhp 33 --actor_hp 33 --actor_stages_attack 0 --actor_stages_defense 0 --actor_stages_spatk 0 --actor_stages_spdef 0 --actor_stages_speed 0 --actor_stages_accuracy 0 --actor_stages_evasion 0 --opponent_stages_attack 0 --opponent_stages_defense 0 --opponent_stages_spatk 0 --opponent_stages_spdef 0 --opponent_stages_speed 0 --opponent_stages_accuracy 0 --opponent_stages_evasion 0
+
 import json
 import logging
 import os

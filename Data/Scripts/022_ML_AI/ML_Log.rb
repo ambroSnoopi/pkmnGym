@@ -179,7 +179,12 @@ class TurnLog < ML_Log
       choice = c.clone
       case choice[0] #Possible Cases: :None, :UseMove, :SwitchOut, :UseItem, :Call, :Run, :Shift 
       when :UseMove  #[:UseMove, idxMove, Move, Target] see def pbRegisterMove #where is the score?
-        choice[2] = MoveLog.new(choice[2].realMove)
+        if choice[2].respond_to?('realMove') && !choice[2]&.realMove.nil?
+          choice[2] = MoveLog.new(choice[2].realMove)
+        else
+          echoln "ERROR parsing Choice as MoveLog"
+          echoln choice[2].inspect #TODO: fix #<Battle::Move::Struggle> (it has no realMove)
+        end
       end
       @choices.append(choice)
     end

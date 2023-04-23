@@ -435,7 +435,7 @@ module Settings
   # To use AI features you need to install PYTHON 3.10 or setup a Conda Environment
 
   USE_ML = true     # whether your battles shall be logged for Machine Learning
-  USE_AI = true     # whether trained AI models shall be used for battle decisions
+  USE_AI = false     # whether trained AI models shall be used for battle decisions
   ONLINE_AI = false # if true, you need to install PYTHON 3.10 // if false (but USE_AI is true), you need to setup a Conda Env (see ML_AI.rb)
 
   # To improve AI behaviour, consider contributing your logs to:
