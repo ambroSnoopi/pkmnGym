@@ -68,3 +68,28 @@ Challenges = gcR8
 Trainers = gcR9_trainers.txt
 Pokemon = gcR9_pkmn.txt
 Challenges = gcR9
+#-------------------------------
+[TrainerList]
+Trainers = gcR10_trainers.txt
+Pokemon = gcR10_pkmn.txt
+Challenges = gcR10
+#-------------------------------
+[TrainerList]
+Trainers = gcR11_trainers.txt
+Pokemon = gcR11_pkmn.txt
+Challenges = gcR11
+#-------------------------------
+[TrainerList]
+Trainers = gcR12_trainers.txt
+Pokemon = gcR12_pkmn.txt
+Challenges = gcR12
+#-------------------------------
+[TrainerList]
+Trainers = gcR13_trainers.txt
+Pokemon = gcR13_pkmn.txt
+Challenges = gcR13
+#-------------------------------
+[TrainerList]
+Trainers = gcR14_trainers.txt
+Pokemon = gcR14_pkmn.txt
+Challenges = gcR14
